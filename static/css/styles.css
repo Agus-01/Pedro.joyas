@@ -93,16 +93,31 @@ button {
 }
 
 .hero-card {
-    width: min(100%, 420px);
-    min-height: 320px;
-    background: linear-gradient(145deg, rgba(255,255,255,0.06), rgba(255,255,255,0.01));
-    border: 1px solid rgba(255,255,255,0.08);
-    border-radius: 32px;
-    padding: 2rem;
+    width: min(100%, 520px);
+    height: 520px;
+
+    border-radius: 36px;
+
     position: relative;
+
     overflow: hidden;
-    color: #fff;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.35);
+
+    background: #111;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    box-shadow:
+        0 32px 80px rgba(0,0,0,0.35),
+        0 0 30px rgba(210,157,60,0.12);
+}
+
+.hero-card img {
+    width: 100%;
+    height: 100%;
+
+    object-fit: cover;
+
+    display: block;
 }
 
 .hero-card::before {
