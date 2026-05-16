@@ -86,17 +86,35 @@ h3,
 }
 
 .logo-img {
-    width: 90px;
-    height: 90px;
+    width: 85px;
+    height: 85px;
 
-    object-fit: contain;
+    object-fit: cover;
 
-    filter:
-        drop-shadow(0 0 10px rgba(212,175,55,0.35))
-        brightness(1.15);
+    border-radius: 50%;
 
-    transition: all 0.3s ease;
+    padding: 6px;
 
+    background:
+        radial-gradient(circle at top, #2a2a2a, #111);
+
+    border: 2px solid rgba(212,175,55,0.45);
+
+    box-shadow:
+        0 0 20px rgba(212,175,55,0.18),
+        0 10px 25px rgba(0,0,0,0.45);
+
+    transition: all 0.35s ease;
+}
+
+.navbar-logo:hover .logo-img {
+    transform: scale(1.08) rotate(2deg);
+
+    border-color: var(--gold);
+
+    box-shadow:
+        0 0 35px rgba(212,175,55,0.35),
+        0 15px 40px rgba(0,0,0,0.55);
 }
 
 .logo-text h1 {
