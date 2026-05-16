@@ -9,6 +9,7 @@ let products = [];
 let cart = [];
 let selectedCategory = 'todos';
 
+// DOM Elements
 const cartItemsElement = document.getElementById('cart-items');
 const cartTotalElement = document.getElementById('cart-total');
 const checkoutButton = document.getElementById('checkout-button');
@@ -20,6 +21,15 @@ const filterButtonsElement = document.getElementById('filter-buttons');
 const productGridElement = document.getElementById('product-grid');
 const hamburgerBtn = document.getElementById('hamburger-btn');
 const navMenu = document.getElementById('nav-menu');
+
+// Navbar Elements
+const cartToggleBtn = document.getElementById('cart-toggle');
+const dropdownMenu = document.getElementById('cart-dropdown-menu');
+const dropdownItems = document.getElementById('dropdown-items');
+const dropdownTotal = document.getElementById('dropdown-total');
+const searchInput = document.getElementById('search-input');
+const searchBtn = document.querySelector('.search-btn');
+const cartCount = document.getElementById('cart-count');
 
 async function loadProducts() {
     const response = await fetch('/api/products');
@@ -96,6 +106,8 @@ function updateCart() {
         cartItemsElement.innerHTML = 'Tu carrito está vacío.';
         checkoutButton.disabled = true;
         cartTotalElement.textContent = '$0';
+        cartCount.textContent = '0';
+        updateDropdown();
         return;
     }
 
@@ -112,6 +124,11 @@ function updateCart() {
     const total = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
     cartTotalElement.textContent = `$${total.toFixed(2)}`;
     checkoutButton.disabled = false;
+    
+    // Update cart count and dropdown
+    const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+    cartCount.textContent = itemCount;
+    updateDropdown();
 }
 
 function showNotification(message) {
@@ -180,6 +197,85 @@ document.addEventListener('click', (e) => {
         hamburgerBtn.classList.remove('active');
         navMenu.classList.remove('active');
     }
+});
+
+// Cart Dropdown
+function updateDropdown() {
+    dropdownItems.innerHTML = '';
+    let total = 0;
+
+    if (cart.length === 0) {
+        dropdownItems.innerHTML = '<div style="padding: 1.5rem; text-align: center; color: #999;">Tu carrito está vacío</div>';
+        dropdownTotal.textContent = 'Total: $0';
+        return;
+    }
+
+    cart.forEach((item) => {
+        const itemTotal = item.price * item.quantity;
+        total += itemTotal;
+
+        const dropdownItem = document.createElement('div');
+        dropdownItem.className = 'dropdown-item';
+        dropdownItem.innerHTML = `
+            <div class="item-info">
+                <div class="item-name">${item.name}</div>
+                <div class="item-price">$${item.price.toFixed(0)} x ${item.quantity}</div>
+            </div>
+            <button class="remove-btn" style="background: none; border: none; color: #d29d3c; cursor: pointer; font-size: 1.2rem;">×</button>
+        `;
+        
+        dropdownItem.querySelector('.remove-btn').addEventListener('click', () => {
+            removeFromCart(item.id);
+        });
+
+        dropdownItems.appendChild(dropdownItem);
+    });
+
+    dropdownTotal.textContent = `Total: $${total.toFixed(0)}`;
+}
+
+cartToggleBtn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    dropdownMenu.classList.toggle('active');
+});
+
+// Close dropdown when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.cart-dropdown')) {
+        dropdownMenu.classList.remove('active');
+    }
+});
+
+// Search functionality
+function handleSearch(query) {
+    if (!query.trim()) {
+        renderProducts();
+        return;
+    }
+
+    const filteredProducts = products.filter(product =>
+        product.name.toLowerCase().includes(query.toLowerCase()) ||
+        product.description.toLowerCase().includes(query.toLowerCase())
+    );
+
+    productGridElement.innerHTML = '';
+    if (filteredProducts.length === 0) {
+        productGridElement.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #999;">No se encontraron productos</p>';
+        return;
+    }
+
+    filteredProducts.forEach(product => {
+        const card = createProductCard(product);
+        productGridElement.appendChild(card);
+    });
+}
+
+searchInput.addEventListener('input', (e) => {
+    handleSearch(e.target.value);
+});
+
+searchBtn.addEventListener('click', () => {
+    handleSearch(searchInput.value);
 });
 
 window.addEventListener('load', loadProducts);
