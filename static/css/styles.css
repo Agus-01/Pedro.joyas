@@ -32,22 +32,58 @@ button {
 }
 
 /* =========================
-   NAVBAR / LOGO
+   NAVBAR
+========================= */
+
+.navbar {
+    width: 100%;
+
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+
+    padding: 1rem 2rem;
+
+    background: rgba(10,10,10,0.88);
+
+    backdrop-filter: blur(12px);
+
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.navbar-container {
+    max-width: 1400px;
+
+    margin: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    gap: 2rem;
+}
+
+/* =========================
+   LOGO
 ========================= */
 
 .navbar-logo {
     display: flex;
     align-items: center;
     gap: 1rem;
+
+    flex-shrink: 0;
 }
 
 .logo-img {
-    width: 70px;
-    height: 70px;
+    width: 65px;
+    height: 65px;
 
     object-fit: cover;
 
     border-radius: 50%;
+
+    display: block;
 
     border: 2px solid rgba(255,255,255,0.08);
 
@@ -56,13 +92,84 @@ button {
 
 .logo-text h1 {
     margin: 0;
-    font-size: 1.3rem;
+
+    font-size: 1.2rem;
+
+    line-height: 1.1;
 }
 
 .logo-text p {
-    margin: 0;
+    margin: 0.2rem 0 0;
+
     color: #d6c49b;
-    font-size: 0.9rem;
+
+    font-size: 0.85rem;
+}
+
+/* =========================
+   SEARCH BAR
+========================= */
+
+.search-bar {
+    flex: 1;
+
+    max-width: 420px;
+
+    position: relative;
+}
+
+.search-bar input {
+    width: 100%;
+
+    padding: 0.9rem 3rem 0.9rem 1rem;
+
+    border-radius: 999px;
+
+    border: 1px solid rgba(255,255,255,0.08);
+
+    background: rgba(255,255,255,0.04);
+
+    color: white;
+
+    outline: none;
+}
+
+.search-btn {
+    position: absolute;
+
+    right: 1rem;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    background: none;
+
+    border: none;
+
+    color: #d6c49b;
+
+    cursor: pointer;
+}
+
+/* =========================
+   NAV MENU
+========================= */
+
+.nav-menu {
+    display: flex;
+    gap: 1.5rem;
+}
+
+.nav-link {
+    color: #fff;
+
+    font-size: 0.95rem;
+
+    transition: 0.2s ease;
+}
+
+.nav-link:hover {
+    color: #f1c66a;
 }
 
 /* =========================
@@ -165,64 +272,18 @@ button {
 }
 
 .hero-card {
-    width: min(100%, 420px);
-
-    min-height: 320px;
-
-    background:
-        linear-gradient(
-            145deg,
-            rgba(255,255,255,0.06),
-            rgba(255,255,255,0.01)
-        );
-
-    border: 1px solid rgba(255,255,255,0.08);
+    width: 420px;
+    height: 420px;
 
     border-radius: 32px;
 
-    position: relative;
-
     overflow: hidden;
 
-    color: #fff;
+    position: relative;
+
+    border: 1px solid rgba(255,255,255,0.08);
 
     box-shadow: 0 32px 80px rgba(0,0,0,0.35);
-}
-
-.hero-card::before {
-    content: '';
-
-    position: absolute;
-
-    inset: 0;
-
-    background:
-        radial-gradient(
-            circle at top left,
-            rgba(210,157,60,0.3),
-            transparent 30%
-        ),
-        radial-gradient(
-            circle at bottom right,
-            rgba(255,255,255,0.1),
-            transparent 22%
-        );
-}
-
-.hero-card::after {
-    content: '';
-
-    position: absolute;
-
-    width: 250px;
-    height: 250px;
-
-    border-radius: 50%;
-
-    background: rgba(255, 255, 255, 0.08);
-
-    top: -60px;
-    right: -60px;
 }
 
 .hero-card img {
@@ -232,10 +293,6 @@ button {
     object-fit: cover;
 
     display: block;
-
-    position: relative;
-
-    z-index: 2;
 }
 
 /* =========================
@@ -312,336 +369,6 @@ button {
 }
 
 /* =========================
-   CARDS
-========================= */
-
-.product-card,
-.feature-card,
-.cart-panel {
-    background: rgba(14,14,14,0.96);
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    border-radius: 24px;
-
-    padding: 1.8rem;
-
-    box-shadow: 0 24px 72px rgba(0,0,0,0.25);
-}
-
-.product-card {
-    display: grid;
-    gap: 1rem;
-
-    position: relative;
-}
-
-.product-media {
-    width: 100%;
-
-    border-radius: 24px;
-
-    overflow: hidden;
-
-    min-height: 220px;
-
-    background: rgba(255,255,255,0.05);
-}
-
-.product-media img {
-    width: 100%;
-    height: 100%;
-
-    object-fit: cover;
-
-    display: block;
-}
-
-.product-card-body {
-    display: grid;
-    gap: 1rem;
-}
-
-.product-card::before {
-    content: attr(data-category);
-
-    position: absolute;
-
-    top: 1.2rem;
-    right: 1.2rem;
-
-    font-size: 0.75rem;
-
-    text-transform: uppercase;
-
-    letter-spacing: 0.16em;
-
-    color: rgba(255,255,255,0.55);
-}
-
-.product-card h3 {
-    margin: 0;
-
-    font-size: 1.4rem;
-}
-
-.product-card p {
-    margin: 0;
-
-    line-height: 1.8;
-
-    color: #ccc;
-}
-
-.product-card .price {
-    font-size: 1.25rem;
-
-    font-weight: 700;
-
-    color: #f4e3ae;
-}
-
-.product-card .btn {
-    width: fit-content;
-}
-
-/* =========================
-   FEATURES
-========================= */
-
-.section-combos .product-grid {
-    grid-template-columns:
-        repeat(auto-fit, minmax(280px, 1fr));
-}
-
-.features-grid {
-    grid-template-columns:
-        repeat(auto-fit, minmax(220px, 1fr));
-}
-
-.feature-card h3 {
-    margin-top: 0;
-}
-
-/* =========================
-   CART
-========================= */
-
-.cart-panel {
-    display: grid;
-    gap: 1.5rem;
-}
-
-.cart-items {
-    min-height: 180px;
-
-    display: grid;
-
-    gap: 1rem;
-}
-
-.cart-item {
-    display: flex;
-
-    justify-content: space-between;
-
-    gap: 1rem;
-
-    align-items: center;
-
-    padding: 1rem;
-
-    border-radius: 18px;
-
-    background: rgba(255,255,255,0.04);
-}
-
-.cart-item span {
-    display: block;
-}
-
-.cart-item button {
-    background: transparent;
-
-    border: 1px solid rgba(255,255,255,0.14);
-
-    color: #fff;
-
-    border-radius: 999px;
-
-    padding: 0.65rem 1rem;
-}
-
-.cart-summary {
-    display: flex;
-
-    justify-content: space-between;
-
-    align-items: center;
-
-    gap: 1rem;
-
-    flex-wrap: wrap;
-}
-
-.summary-row {
-    display: flex;
-
-    justify-content: space-between;
-
-    width: 100%;
-
-    font-size: 1.1rem;
-
-    letter-spacing: 0.01em;
-}
-
-/* =========================
-   MODAL
-========================= */
-
-.modal {
-    position: fixed;
-
-    inset: 0;
-
-    background: rgba(0,0,0,0.8);
-
-    display: none;
-
-    align-items: center;
-    justify-content: center;
-
-    padding: 2rem;
-
-    z-index: 20;
-}
-
-.modal.active {
-    display: flex;
-}
-
-.modal-panel {
-    width: min(640px, 100%);
-
-    max-height: 90vh;
-
-    overflow-y: auto;
-
-    background: rgba(12, 12, 12, 0.98);
-
-    border-radius: 28px;
-
-    padding: 2rem;
-
-    position: relative;
-
-    box-shadow: 0 36px 120px rgba(0,0,0,0.35);
-}
-
-.modal-close {
-    position: absolute;
-
-    top: 1rem;
-    right: 1rem;
-
-    width: 44px;
-    height: 44px;
-
-    border: none;
-
-    border-radius: 50%;
-
-    background: rgba(255,255,255,0.08);
-
-    color: #fff;
-
-    font-size: 1.5rem;
-
-    cursor: pointer;
-}
-
-/* =========================
-   FORMS
-========================= */
-
-.form-group {
-    display: grid;
-
-    gap: 0.65rem;
-
-    margin-bottom: 1.25rem;
-}
-
-.form-group label {
-    font-size: 0.95rem;
-
-    color: #d6c49b;
-}
-
-.form-group input,
-.form-group select {
-    width: 100%;
-
-    padding: 0.95rem 1rem;
-
-    border-radius: 16px;
-
-    border: 1px solid rgba(255,255,255,0.08);
-
-    background: rgba(255,255,255,0.04);
-
-    color: #fff;
-}
-
-.form-note {
-    margin-top: 1rem;
-
-    color: #aaa;
-
-    font-size: 0.95rem;
-}
-
-/* =========================
-   NOTIFICATION
-========================= */
-
-.notification {
-    position: fixed;
-
-    left: 50%;
-
-    transform: translateX(-50%);
-
-    bottom: 1.5rem;
-
-    min-width: 300px;
-    max-width: 90%;
-
-    padding: 1rem 1.2rem;
-
-    border-radius: 16px;
-
-    background: rgba(16,16,16,0.96);
-
-    color: #fff;
-
-    box-shadow: 0 24px 68px rgba(0,0,0,0.24);
-
-    opacity: 0;
-
-    pointer-events: none;
-
-    transition: opacity 0.2s ease;
-}
-
-.notification.show {
-    opacity: 1;
-
-    pointer-events: auto;
-}
-
-/* =========================
    RESPONSIVE
 ========================= */
 
@@ -653,5 +380,26 @@ button {
 
     .hero-image {
         justify-content: center;
+    }
+
+    .navbar-container {
+        flex-wrap: wrap;
+    }
+
+    .search-bar {
+        width: 100%;
+        max-width: 100%;
+    }
+
+    .nav-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+
+    .hero-card {
+        width: 100%;
+        max-width: 380px;
+        height: 380px;
     }
 }
