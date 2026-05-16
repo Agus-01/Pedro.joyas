@@ -118,6 +118,11 @@ button {
     object-fit: cover;
 
     display: block;
+
+    position: relative;
+    z-index: 2;
+
+    border-radius: 32px;
 }
 
 .hero-card::before {
