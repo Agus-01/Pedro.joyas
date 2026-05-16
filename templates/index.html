@@ -1,171 +1,498 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <title>Pedro.Joyeria</title>
+
+    <!-- FUENTES -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="/static/css/styles.css" />
 </head>
+
 <body>
+
+    <!-- =========================
+         NAVBAR
+    ========================== -->
+
     <header class="navbar">
+
         <div class="navbar-container">
+
             <a href="#" class="navbar-logo">
-                <img src="/static/images/logo.png" alt="Pedro Joyas" class="logo-img">
+
+                <img
+                    src="/static/images/logo.png"
+                    alt="Pedro Joyas"
+                    class="logo-img"
+                >
+
                 <div class="logo-text">
                     <h1>Pedro Joyas</h1>
                     <p>Joyería Premium</p>
                 </div>
+
             </a>
 
+            <!-- SEARCH -->
+
             <div class="search-bar">
-                <input type="text" id="search-input" placeholder="Buscar joyas...">
+
+                <input
+                    type="text"
+                    id="search-input"
+                    placeholder="Buscar joyas..."
+                >
+
                 <button class="search-btn">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+                    <svg
+                        width="20"
+                        height="20"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                    >
                         <circle cx="11" cy="11" r="8"></circle>
                         <path d="m21 21-4.35-4.35"></path>
                     </svg>
+
                 </button>
+
             </div>
 
+            <!-- RIGHT -->
+
             <div class="navbar-right">
+
+                <!-- CART -->
+
                 <div class="cart-dropdown">
+
                     <button class="cart-btn" id="cart-toggle">
-                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+
+                        <svg
+                            width="24"
+                            height="24"
+                            viewBox="0 0 24 24"
+                            fill="none"
+                            stroke="currentColor"
+                        >
                             <circle cx="9" cy="21" r="1"></circle>
                             <circle cx="20" cy="21" r="1"></circle>
                             <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                         </svg>
+
                         <span class="cart-count" id="cart-count">0</span>
+
                     </button>
+
                     <div class="dropdown-menu" id="cart-dropdown-menu">
+
                         <div id="dropdown-items"></div>
+
                         <div class="dropdown-footer">
                             <p id="dropdown-total">Total: $0</p>
-                            <button class="btn-checkout-mini">Ir al Carrito</button>
+
+                            <button class="btn-checkout-mini">
+                                Ir al Carrito
+                            </button>
                         </div>
+
                     </div>
+
                 </div>
+
+                <!-- HAMBURGER -->
 
                 <button class="hamburger" id="hamburger-btn">
                     <span></span>
                     <span></span>
                     <span></span>
                 </button>
+
             </div>
+
+            <!-- NAV MENU -->
 
             <nav class="nav-menu" id="nav-menu">
-                <a href="#catalogo" class="nav-link">Catálogo</a>
-                <a href="#combos" class="nav-link">Promociones</a>
-                <a href="#acerca" class="nav-link">Acerca de</a>
-                <a href="#contacto" class="nav-link">Contacto</a>
+
+                <a href="#catalogo" class="nav-link">
+                    Catálogo
+                </a>
+
+                <a href="#combos" class="nav-link">
+                    Promociones
+                </a>
+
+                <a href="#acerca" class="nav-link">
+                    Acerca de
+                </a>
+
+                <a href="#contacto" class="nav-link">
+                    Contacto
+                </a>
+
             </nav>
+
         </div>
+
     </header>
 
+    <!-- =========================
+         HERO
+    ========================== -->
+
     <header class="hero">
+
         <div class="hero-content">
-            <p class="eyebrow">Colección Exclusiva</p>
-            <h1>Joyería Premium para momentos inolvidables</h1>
-            <p>Descubre anillos, pulseras, collares y combos diseñados para destacar tu estilo con elegancia.</p>
-            <a class="btn btn-primary" href="#catalogo">Ver catálogo</a>
+
+            <p class="eyebrow">
+                Colección Exclusiva
+            </p>
+
+            <h1>
+                Joyería Premium para momentos inolvidables
+            </h1>
+
+            <p>
+                Descubre anillos, pulseras, collares y combos
+                diseñados para destacar tu estilo con elegancia.
+            </p>
+
+            <a class="btn btn-primary" href="#catalogo">
+                Ver catálogo
+            </a>
+
         </div>
-      <div class="hero-image">
-    <div class="hero-card">
-        <img src="/static/images/Informacion.jpeg" alt="Joya Premium">
-    </div>
-</div>
-</header>
 
-<main>
+        <!-- HERO IMAGE -->
 
-<section id="catalogo" class="section section-products">
+        <div class="hero-image">
+
+            <div class="hero-card">
+
+                <img
+                    src="/static/images/Informacion.jpeg"
+                    alt="Joya Premium"
+                >
+
+            </div>
+
+        </div>
+
+    </header>
+
+    <!-- =========================
+         MAIN
+    ========================== -->
+
+    <main>
+
+        <!-- CATALOGO -->
+
         <section id="catalogo" class="section section-products">
+
             <div class="section-header">
-                <p class="eyebrow">Catálogo</p>
-                <h2>Explora nuestra colección</h2>
+
+                <p class="eyebrow">
+                    Catálogo
+                </p>
+
+                <h2>
+                    Explora nuestra colección
+                </h2>
+
             </div>
-            <div class="product-filter" id="filter-buttons"></div>
-            <div class="product-grid" id="product-grid"></div>
+
+            <div
+                class="product-filter"
+                id="filter-buttons"
+            ></div>
+
+            <div
+                class="product-grid"
+                id="product-grid"
+            ></div>
+
         </section>
 
-        <section class="section section-combos">
+        <!-- COMBOS -->
+
+        <section
+            id="combos"
+            class="section section-combos"
+        >
+
             <div class="section-header">
-                <p class="eyebrow">Promociones</p>
-                <h2>Combos especiales</h2>
+
+                <p class="eyebrow">
+                    Promociones
+                </p>
+
+                <h2>
+                    Combos especiales
+                </h2>
+
             </div>
-            <div class="product-grid" id="combos"></div>
+
+            <div
+                class="product-grid"
+                id="combos"
+            ></div>
+
         </section>
+
+        <!-- FEATURES -->
 
         <section class="section section-why">
+
             <div class="section-header">
-                <p class="eyebrow">Por qué elegirnos</p>
-                <h2>Diseño premium, compra segura, atención personalizada</h2>
+
+                <p class="eyebrow">
+                    Por qué elegirnos
+                </p>
+
+                <h2>
+                    Diseño premium, compra segura,
+                    atención personalizada
+                </h2>
+
             </div>
+
             <div class="features-grid">
+
                 <div class="feature-card">
-                    <h3>Pagos automáticos</h3>
-                    <p>Procesamos Mercado Pago y alias bancarios con un flujo rápido y confiable.</p>
+
+                    <h3>
+                        Pagos automáticos
+                    </h3>
+
+                    <p>
+                        Procesamos Mercado Pago y alias
+                        bancarios con un flujo rápido y confiable.
+                    </p>
+
                 </div>
+
                 <div class="feature-card">
-                    <h3>Factura automática</h3>
-                    <p>Generamos resumen de compra automáticamente para ti y tu cliente.</p>
+
+                    <h3>
+                        Factura automática
+                    </h3>
+
+                    <p>
+                        Generamos resumen de compra
+                        automáticamente para ti y tu cliente.
+                    </p>
+
                 </div>
+
                 <div class="feature-card">
-                    <h3>Entrega confiable</h3>
-                    <p>El cliente ve el pedido claro, el dueño recibe la información listada.</p>
+
+                    <h3>
+                        Entrega confiable
+                    </h3>
+
+                    <p>
+                        El cliente ve el pedido claro,
+                        el dueño recibe la información listada.
+                    </p>
+
                 </div>
+
             </div>
+
         </section>
+
+        <!-- CART -->
 
         <section class="section section-cart">
+
             <div class="section-header">
-                <p class="eyebrow">Carrito</p>
-                <h2>Tu selección</h2>
+
+                <p class="eyebrow">
+                    Carrito
+                </p>
+
+                <h2>
+                    Tu selección
+                </h2>
+
             </div>
+
             <div class="cart-panel">
-                <div id="cart-items" class="cart-items">Tu carrito está vacío.</div>
-                <div class="cart-summary">
-                    <div class="summary-row"><span>Total</span><span id="cart-total">$0</span></div>
-                    <button id="checkout-button" class="btn btn-secondary" disabled>Continuar compra</button>
+
+                <div
+                    id="cart-items"
+                    class="cart-items"
+                >
+                    Tu carrito está vacío.
                 </div>
+
+                <div class="cart-summary">
+
+                    <div class="summary-row">
+
+                        <span>Total</span>
+
+                        <span id="cart-total">
+                            $0
+                        </span>
+
+                    </div>
+
+                    <button
+                        id="checkout-button"
+                        class="btn btn-secondary"
+                        disabled
+                    >
+                        Continuar compra
+                    </button>
+
+                </div>
+
             </div>
+
         </section>
+
     </main>
 
-    <div class="modal" id="checkout-modal" aria-hidden="true">
+    <!-- =========================
+         MODAL
+    ========================== -->
+
+    <div
+        class="modal"
+        id="checkout-modal"
+        aria-hidden="true"
+    >
+
         <div class="modal-panel">
-            <button class="modal-close" id="close-checkout">×</button>
-            <h2>Finalizar compra</h2>
-            <p>Completa los datos para procesar el pago y recibir la factura.</p>
+
+            <button
+                class="modal-close"
+                id="close-checkout"
+            >
+                ×
+            </button>
+
+            <h2>
+                Finalizar compra
+            </h2>
+
+            <p>
+                Completa los datos para procesar el pago
+                y recibir la factura.
+            </p>
+
             <form id="checkout-form">
+
                 <div class="form-group">
-                    <label for="buyer-name">Nombre completo</label>
-                    <input id="buyer-name" name="buyerName" type="text" required />
+
+                    <label for="buyer-name">
+                        Nombre completo
+                    </label>
+
+                    <input
+                        id="buyer-name"
+                        name="buyerName"
+                        type="text"
+                        required
+                    />
+
                 </div>
+
                 <div class="form-group">
-                    <label for="buyer-email">Correo electrónico</label>
-                    <input id="buyer-email" name="buyerEmail" type="email" required />
+
+                    <label for="buyer-email">
+                        Correo electrónico
+                    </label>
+
+                    <input
+                        id="buyer-email"
+                        name="buyerEmail"
+                        type="email"
+                        required
+                    />
+
                 </div>
+
                 <div class="form-group">
-                    <label for="buyer-dni">Alias/DNI</label>
-                    <input id="buyer-dni" name="buyerDni" type="text" placeholder="Alias de cuenta / DNI" required />
+
+                    <label for="buyer-dni">
+                        Alias/DNI
+                    </label>
+
+                    <input
+                        id="buyer-dni"
+                        name="buyerDni"
+                        type="text"
+                        placeholder="Alias de cuenta / DNI"
+                        required
+                    />
+
                 </div>
+
                 <div class="form-group">
-                    <label>Forma de pago</label>
-                    <select id="payment-method" name="paymentMethod" required>
-                        <option value="mercadopago">Mercado Pago</option>
-                        <option value="alias">Alias / Transferencia</option>
+
+                    <label>
+                        Forma de pago
+                    </label>
+
+                    <select
+                        id="payment-method"
+                        name="paymentMethod"
+                        required
+                    >
+                        <option value="mercadopago">
+                            Mercado Pago
+                        </option>
+
+                        <option value="alias">
+                            Alias / Transferencia
+                        </option>
                     </select>
+
                 </div>
-                <button type="submit" class="btn btn-primary">Confirmar compra</button>
-                <div class="form-note">Al confirmar serás redirigido a Mercado Pago o recibirás los datos de pago.</div>
+
+                <button
+                    type="submit"
+                    class="btn btn-primary"
+                >
+                    Confirmar compra
+                </button>
+
+                <div class="form-note">
+                    Al confirmar serás redirigido a Mercado Pago
+                    o recibirás los datos de pago.
+                </div>
+
             </form>
+
         </div>
+
     </div>
 
-    <div class="notification" id="notification"></div>
+    <!-- NOTIFICATION -->
+
+    <div
+        class="notification"
+        id="notification"
+    ></div>
+
+    <!-- JS -->
+
     <script src="/static/js/main.js"></script>
+
 </body>
+
 </html>
