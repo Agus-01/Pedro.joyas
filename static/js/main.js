@@ -62,7 +62,7 @@ function renderProducts() {
         ? filteredProducts.map(createProductCard).join('')
         : '<p class="empty-message">No hay productos disponibles en esta categoría.</p>';
 
-    const combosContainer = document.getElementById('combos');
+    const combosContainer = document.getElementById('combos-grid');
     const comboCards = products.filter(item => item.category === 'combos').map(createProductCard).join('');
     combosContainer.innerHTML = comboCards;
 }
