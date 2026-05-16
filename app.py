@@ -1,6 +1,8 @@
 import os
 import uuid
 from flask import Flask, jsonify, render_template, request, url_for
+from flask_sqlalchemy import SQLAlchemy
+from datetime import datetime
 import requests
 from dotenv import load_dotenv
 
@@ -8,8 +10,43 @@ load_dotenv()
 
 app = Flask(__name__)
 
+# Database configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jewelry_store.db'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+db = SQLAlchemy(app)
+
 MP_ACCESS_TOKEN = os.environ.get('MP_ACCESS_TOKEN', '').strip()
 MP_API_URL = 'https://api.mercadopago.com/checkout/preferences'
+
+# Database model for orders
+class Order(db.Model):
+    id = db.Column(db.String(20), primary_key=True)
+    buyer_name = db.Column(db.String(100), nullable=False)
+    buyer_email = db.Column(db.String(100), nullable=False)
+    buyer_dni = db.Column(db.String(20), nullable=False)
+    payment_method = db.Column(db.String(50), default='mercadopago')
+    items = db.Column(db.JSON, nullable=False)
+    total = db.Column(db.Float, nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    payment_status = db.Column(db.String(50), default='pending')
+
+    def to_dict(self):
+        return {
+            'id': self.id,
+            'buyer_name': self.buyer_name,
+            'buyer_email': self.buyer_email,
+            'buyer_dni': self.buyer_dni,
+            'payment_method': self.payment_method,
+            'items': self.items,
+            'total': self.total,
+            'created_at': self.created_at.isoformat(),
+            'payment_status': self.payment_status
+        }
+
+# Create tables
+with app.app_context():
+    db.create_all()
+
 
 products = [
     {'id': 1, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo TODO PASA', 'description': 'Anillo premium con grabado distintivo.', 'price': 45000.00, 'image': '/static/images/ring-todo-pasa.jpg'},
@@ -24,8 +61,6 @@ products = [
     {'id': 10, 'category': 'combos', 'category_label': 'Combo', 'name': 'Combo Elegance', 'description': 'Set con cadena y pieza de lujo.', 'price': 220.00, 'image': '/static/images/combo-1.jpg'},
     {'id': 11, 'category': 'combos', 'category_label': 'Combo', 'name': 'Combo Brillante', 'description': 'Set especial con diseño distintivo.', 'price': 245.00, 'image': '/static/images/combo-2.jpg'}
 ]
-
-orders = {}
 
 @app.route('/')
 def home():
@@ -59,16 +94,25 @@ def api_checkout():
         for item in items
     ]
 
-    order = {
-        'id': order_id,
-        'buyer_name': buyer_name,
-        'buyer_email': buyer_email,
-        'buyer_dni': buyer_dni,
-        'payment_method': payment_method,
-        'items': prepared_items,
-        'total': total
-    }
-    orders[order_id] = order
+    # Create and save order to database
+    order = Order(
+        id=order_id,
+        buyer_name=buyer_name,
+        buyer_email=buyer_email,
+        buyer_dni=buyer_dni,
+        payment_method=payment_method,
+        items=prepared_items,
+        total=total,
+        payment_status='pending'
+    )
+    
+    try:
+        db.session.add(order)
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'message': f'Error al guardar la orden: {str(e)}'}), 500
+
     invoice_url = url_for('invoice', order_id=order_id, _external=True)
 
     if payment_method == 'mercadopago':
@@ -125,7 +169,7 @@ def api_checkout():
 
 @app.route('/factura/<order_id>')
 def invoice(order_id):
-    order = orders.get(order_id)
+    order = Order.query.get(order_id)
     if not order:
         return 'Orden no encontrada', 404
     return render_template('invoice.html', order=order)

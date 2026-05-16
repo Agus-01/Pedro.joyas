@@ -18,6 +18,8 @@ const checkoutForm = document.getElementById('checkout-form');
 const notification = document.getElementById('notification');
 const filterButtonsElement = document.getElementById('filter-buttons');
 const productGridElement = document.getElementById('product-grid');
+const hamburgerBtn = document.getElementById('hamburger-btn');
+const navMenu = document.getElementById('nav-menu');
 
 async function loadProducts() {
     const response = await fetch('/api/products');
@@ -156,6 +158,28 @@ checkoutForm.addEventListener('submit', async event => {
     checkoutModal.classList.remove('active');
     window.open(result.invoice_url, '_blank');
     window.location.href = result.payment_url;
+});
+
+// Hamburger Menu
+hamburgerBtn.addEventListener('click', () => {
+    hamburgerBtn.classList.toggle('active');
+    navMenu.classList.toggle('active');
+});
+
+// Close menu when clicking on a link
+document.querySelectorAll('.nav-link').forEach(link => {
+    link.addEventListener('click', () => {
+        hamburgerBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+    });
+});
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+    if (!e.target.closest('.navbar-container')) {
+        hamburgerBtn.classList.remove('active');
+        navMenu.classList.remove('active');
+    }
 });
 
 window.addEventListener('load', loadProducts);
