@@ -272,8 +272,8 @@ button {
 }
 
 .hero-card {
-    width: 420px;
-    height: 420px;
+    width: 380px;
+    height: 380px;
 
     border-radius: 32px;
 
@@ -285,7 +285,6 @@ button {
 
     box-shadow: 0 32px 80px rgba(0,0,0,0.35);
 }
-
 .hero-card img {
     width: 100%;
     height: 100%;
