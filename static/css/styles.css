@@ -111,14 +111,7 @@ button {
         0 0 30px rgba(210,157,60,0.12);
 }
 
-.hero-card img {
-    width: 100%;
-    height: 100%;
 
-    object-fit: cover;
-
-    display: block;
-}
 
 .hero-card::before {
     content: '';
