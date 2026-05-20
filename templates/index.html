@@ -14,7 +14,7 @@
         rel="stylesheet">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="/static/css/styles.css" />
+    <link rel="stylesheet" href="/static/css/styles.css?v=2" />
 </head>
 
 <body>
@@ -111,6 +111,10 @@
 
                 </div>
 
+                <button class="menu-btn" id="menu-btn" type="button">
+                    Menu
+                </button>
+
                 <!-- HAMBURGER -->
 
                 <button class="hamburger" id="hamburger-btn">
@@ -146,6 +150,33 @@
         </div>
 
     </header>
+
+    <!-- MENU PANEL -->
+    <div class="menu-panel" id="menu-panel" aria-hidden="true">
+        <div class="menu-panel-content">
+            <button class="menu-close" id="menu-close" type="button">×</button>
+
+            <div class="menu-section">
+                <h3>Catálogo</h3>
+                <button class="menu-link" data-action="category" data-category="todos" type="button">Todos</button>
+                <button class="menu-link" data-action="category" data-category="anillos" type="button">Anillos</button>
+                <button class="menu-link" data-action="category" data-category="pulseras" type="button">Pulseras</button>
+                <button class="menu-link" data-action="category" data-category="collares" type="button">Collares</button>
+                <button class="menu-link" data-action="section" data-target="combos" type="button">Promociones</button>
+            </div>
+
+            <div class="menu-section">
+                <h3>Mi espacio</h3>
+                <button class="menu-link" data-action="cart" type="button">Ver carrito</button>
+                <button class="menu-link" data-action="section" data-target="contacto" type="button">Contacto</button>
+                <button class="menu-link" data-action="section" data-target="acerca" type="button">Acerca de</button>
+            </div>
+
+            <div class="menu-section menu-action-group">
+                <button class="btn btn-primary menu-action" data-action="checkout" type="button">Comprar</button>
+            </div>
+        </div>
+    </div>
 
     <!-- =========================
          HERO
@@ -307,6 +338,80 @@
                         el dueño recibe la información listada.
                     </p>
 
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- ABOUT -->
+
+        <section id="acerca" class="section section-about">
+
+            <div class="section-header">
+
+                <p class="eyebrow">
+                    Acerca de
+                </p>
+
+                <h2>
+                    Joyería artesanal con atención personalizada
+                </h2>
+
+            </div>
+
+            <div class="contact-grid">
+
+                <div class="contact-card">
+                    <h3>Calidad premium</h3>
+                    <p>Seleccionamos cada pieza con acabados exclusivos y materiales confiables para que tus clientes reciban solo lo mejor.</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Soporte inmediato</h3>
+                    <p>Asesoramos en pagos y facturación para que el proceso de compra sea claro y rápido tanto para el vendedor como el comprador.</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Envíos seguros</h3>
+                    <p>Coordinamos entrega y seguimiento para que cada pedido llegue con tranquilidad y en perfectas condiciones.</p>
+                </div>
+
+            </div>
+
+        </section>
+
+        <!-- CONTACTO -->
+
+        <section id="contacto" class="section section-contact">
+
+            <div class="section-header">
+
+                <p class="eyebrow">
+                    Contacto
+                </p>
+
+                <h2>
+                    Estamos aquí para ayudarte
+                </h2>
+
+            </div>
+
+            <div class="contact-grid">
+
+                <div class="contact-card">
+                    <h3>Correo</h3>
+                    <p>ventas@pedrojoyeria.com</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Teléfono</h3>
+                    <p>+54 9 11 1234 5678</p>
+                </div>
+
+                <div class="contact-card">
+                    <h3>Dirección</h3>
+                    <p>Av. Ejemplo 1234, Ciudad de Buenos Aires</p>
                 </div>
 
             </div>
@@ -489,9 +594,30 @@
         id="notification"
     ></div>
 
+    <!-- FOOTER -->
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-brand">
+                <img src="/static/images/logo.png" alt="Pedro Joyas" class="footer-logo">
+                <div>
+                    <h3>Pedro Joyas</h3>
+                    <p>Joyería Premium para momentos inolvidables.</p>
+                </div>
+            </div>
+            <div class="footer-links">
+                <a href="#catalogo">Catálogo</a>
+                <a href="#combos">Promociones</a>
+                <a href="#acerca">Acerca de</a>
+                <a href="#contacto">Contacto</a>
+            </div>
+        </div>
+        <p class="footer-copy">© 2026 Pedro Joyas. Todos los derechos reservados.</p>
+    </footer>
+
     <!-- JS -->
 
-    <script src="/static/js/main.js"></script>
+    <script src="/static/js/main.js?v=2"></script>
 
 </body>
 

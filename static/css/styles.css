@@ -205,6 +205,101 @@ button {
     border: 1px solid rgba(255, 255, 255, 0.12);
 }
 
+.menu-btn {
+    min-width: 92px;
+    padding: 0.85rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(255,255,255,0.12);
+    background: rgba(255,255,255,0.06);
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.menu-btn:hover {
+    background: rgba(255,255,255,0.12);
+    transform: translateY(-1px);
+}
+
+.menu-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.75);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1500;
+    padding: 1.5rem;
+}
+
+.menu-panel.active {
+    display: flex;
+}
+
+.menu-panel-content {
+    width: min(520px, 100%);
+    background: rgba(10,10,10,0.98);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 32px;
+    padding: 2rem;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+    position: relative;
+}
+
+.menu-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 44px;
+    height: 44px;
+    border: none;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.08);
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+.menu-section {
+    display: grid;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.menu-section h3 {
+    margin: 0;
+    color: #f1c66a;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+}
+
+.menu-link {
+    width: 100%;
+    text-align: left;
+    padding: 0.95rem 1.2rem;
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 18px;
+    background: rgba(255,255,255,0.04);
+    color: #f7f4ef;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.menu-link:hover,
+.menu-action:hover {
+    background: rgba(241,198,106,0.18);
+    transform: translateY(-1px);
+}
+
+.menu-action-group {
+    margin-top: 0.5rem;
+}
+
+.menu-action {
+    width: 100%;
+}
+
 /* =========================
    HERO IMAGE
 ========================= */
@@ -400,12 +495,95 @@ button {
 }
 
 .section-why,
-.section-cart {
+.section-cart,
+.section-about,
+.section-contact {
     background: rgba(255, 255, 255, 0.03);
     border: 1px solid rgba(255, 255, 255, 0.08);
     border-radius: 32px;
     padding: 3rem 2rem;
     margin-top: 2rem;
+}
+
+.contact-grid,
+.features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+}
+
+.contact-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 28px;
+    padding: 1.8rem;
+    color: #f7f4ef;
+    min-height: 200px;
+}
+
+.contact-card h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+    font-size: 1.15rem;
+}
+
+.contact-card p {
+    margin: 0;
+    color: #d9d6cb;
+    line-height: 1.8;
+}
+
+.footer {
+    padding: 2rem 2rem 3rem;
+    background: rgba(255, 255, 255, 0.04);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.footer-brand {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.footer-logo {
+    width: 52px;
+    height: 52px;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 1px solid rgba(255,255,255,0.08);
+}
+
+.footer-links {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.2rem;
+    align-items: center;
+}
+
+.footer-links a {
+    color: #f7f4ef;
+    opacity: 0.9;
+    transition: opacity 0.2s ease;
+}
+
+.footer-links a:hover {
+    opacity: 1;
+}
+
+.footer-copy {
+    margin-top: 1.5rem;
+    color: #b8b2a8;
+    text-align: center;
 }
 
 .features-grid {
