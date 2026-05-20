@@ -63,6 +63,7 @@ async function loadProducts() {
         if (!response.ok) throw new Error('Error al cargar productos');
         products = await response.json();
         renderProducts();
+        renderOffers();
         updateCart();
     } catch (err) {
         productGridElement.innerHTML = '<p style="color:#f87171;grid-column:1/-1">No se pudieron cargar los productos. Intenta recargar la página.</p>';
@@ -82,16 +83,39 @@ function renderProducts() {
     combosContainer.innerHTML = products.filter(p => p.category === 'combos').map(createProductCard).join('');
 }
 
+function renderOffers() {
+    const offersList = document.getElementById('offers-list');
+    if (!offersList) return;
+    const picks = products.slice(0, 4);
+    offersList.innerHTML = picks.map(p => `
+        <div class="offer-item" onclick="openProductModal(${p.id})">
+            <img src="${p.image}" alt="${p.name}" />
+            <div class="offer-info">
+                <strong>${p.name}</strong>
+                <div class="offer-prices">
+                    <span class="offer-original">$${p.original_price.toLocaleString('es-AR')}</span>
+                    <span class="offer-discount">$${p.price.toLocaleString('es-AR')}</span>
+                </div>
+            </div>
+        </div>
+    `).join('');
+}
+
 function createProductCard(product) {
+    const hasDiscount = product.original_price && product.original_price !== product.price;
     return `
         <article class="product-card" data-category="${product.category_label}">
             <div class="product-media" style="cursor:pointer" onclick="openProductModal(${product.id})">
                 <img src="${product.image}" alt="${product.name}" loading="lazy" />
+                ${hasDiscount ? '<span class="discount-badge">-20%</span>' : ''}
             </div>
             <div class="product-card-body">
                 <h3 style="cursor:pointer" onclick="openProductModal(${product.id})">${product.name}</h3>
                 <p>${product.description}</p>
-                <div class="price">$${product.price.toLocaleString('es-AR')}</div>
+                <div class="price-group">
+                    ${hasDiscount ? `<span class="price-original">$${product.original_price.toLocaleString('es-AR')}</span>` : ''}
+                    <span class="price">$${product.price.toLocaleString('es-AR')}</span>
+                </div>
                 <button class="btn btn-primary" onclick="addToCart(${product.id})">Agregar al carrito</button>
             </div>
         </article>
