@@ -472,6 +472,27 @@ button {
     transform: translateX(3px);
 }
 
+.category-all-wrap {
+    display: flex;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.category-all-btn {
+    width: auto;
+    padding: 1rem 2.5rem;
+    font-size: 1rem;
+    letter-spacing: 0.06em;
+    border: 1px solid rgba(241,198,106,0.45);
+    background: rgba(255,255,255,0.05);
+    color: #f1c66a;
+    text-transform: none;
+}
+
+.category-all-btn:hover {
+    background: rgba(241,198,106,0.12);
+}
+
 /* =========================
    PRODUCT GRID
 ========================= */
@@ -1130,5 +1151,50 @@ button {
         order: 3;
         width: 100%;
         max-width: 100%;
+    }
+
+    /* Productos: scroll horizontal en móvil */
+    .product-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        /* ocultar scrollbar pero mantener funcionalidad */
+        scrollbar-width: none;
+    }
+
+    .product-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .product-card {
+        flex: 0 0 75vw;
+        max-width: 300px;
+        scroll-snap-align: start;
+        min-height: unset;
+    }
+
+    /* Categorías: scroll horizontal en móvil */
+    .category-grid {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        gap: 1rem;
+        padding-bottom: 1rem;
+        scrollbar-width: none;
+    }
+
+    .category-grid::-webkit-scrollbar {
+        display: none;
+    }
+
+    .category-card {
+        flex: 0 0 78vw;
+        scroll-snap-align: start;
     }
 }

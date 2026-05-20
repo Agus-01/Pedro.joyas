@@ -17,7 +17,6 @@ const checkoutModal = document.getElementById('checkout-modal');
 const closeCheckout = document.getElementById('close-checkout');
 const checkoutForm = document.getElementById('checkout-form');
 const notification = document.getElementById('notification');
-const filterButtonsElement = document.getElementById('filter-buttons');
 const productGridElement = document.getElementById('product-grid');
 const searchInput = document.getElementById('search-input');
 const searchBtn = document.querySelector('.search-btn');
@@ -39,20 +38,22 @@ function saveCartToStorage() {
 
 // --- Category cards ---
 function selectCategory(category) {
-    selectedCategory = category === 'combos' ? 'todos' : category;
-    renderFilterButtons();
-    renderProducts();
-    const target = category === 'combos'
-        ? document.getElementById('combos')
-        : document.getElementById('catalogo');
-    if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    if (category !== 'combos') {
-        const titles = { anillos: 'Anillos', pulseras: 'Pulseras', collares: 'Collares', todos: 'Todos los productos' };
-        const eyebrow = document.getElementById('catalogo-eyebrow');
-        const titulo = document.getElementById('catalogo-titulo');
-        if (eyebrow) eyebrow.textContent = titles[category] || 'Productos';
-        if (titulo) titulo.textContent = titles[category] || 'Todos los productos';
+    const catalogSection = document.getElementById('catalogo');
+    const eyebrow = document.getElementById('catalogo-eyebrow');
+    const titulo = document.getElementById('catalogo-titulo');
+    const labels = { todos: 'Todos los productos', anillos: 'Anillos', pulseras: 'Pulseras', collares: 'Collares' };
+
+    if (category === 'combos') {
+        document.getElementById('combos').scrollIntoView({ behavior: 'smooth', block: 'start' });
+        return;
     }
+
+    selectedCategory = category;
+    renderProducts();
+    catalogSection.style.display = 'block';
+    if (eyebrow) eyebrow.textContent = labels[category];
+    if (titulo) titulo.textContent = labels[category];
+    setTimeout(() => catalogSection.scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
 }
 
 // --- Products ---
@@ -61,7 +62,6 @@ async function loadProducts() {
         const response = await fetch('/api/products');
         if (!response.ok) throw new Error('Error al cargar productos');
         products = await response.json();
-        renderFilterButtons();
         renderProducts();
         updateCart();
     } catch (err) {
@@ -69,32 +69,17 @@ async function loadProducts() {
     }
 }
 
-function renderFilterButtons() {
-    filterButtonsElement.innerHTML = Object.entries(categories).map(([key, title]) => {
-        const activeClass = key === selectedCategory ? 'filter-btn active' : 'filter-btn';
-        return `<button class="${activeClass}" data-category="${key}">${title}</button>`;
-    }).join('');
-
-    filterButtonsElement.querySelectorAll('button').forEach(button => {
-        button.addEventListener('click', () => {
-            selectedCategory = button.dataset.category;
-            renderFilterButtons();
-            renderProducts();
-        });
-    });
-}
-
 function renderProducts() {
-    const filteredProducts = selectedCategory === 'todos'
-        ? products.filter(item => item.category !== 'combos')
-        : products.filter(item => item.category === selectedCategory);
+    const filtered = selectedCategory === 'todos'
+        ? products.filter(p => p.category !== 'combos')
+        : products.filter(p => p.category === selectedCategory);
 
-    productGridElement.innerHTML = filteredProducts.length
-        ? filteredProducts.map(createProductCard).join('')
-        : '<p class="empty-message">No hay productos disponibles en esta categoría.</p>';
+    productGridElement.innerHTML = filtered.length
+        ? filtered.map(createProductCard).join('')
+        : '<p class="empty-message">No hay productos en esta categoría.</p>';
 
     const combosContainer = document.getElementById('combos-grid');
-    combosContainer.innerHTML = products.filter(item => item.category === 'combos').map(createProductCard).join('');
+    combosContainer.innerHTML = products.filter(p => p.category === 'combos').map(createProductCard).join('');
 }
 
 function createProductCard(product) {
@@ -318,10 +303,7 @@ document.querySelectorAll('.menu-link').forEach(button => {
             return;
         }
         if (action === 'category') {
-            selectedCategory = category || 'todos';
-            renderFilterButtons();
-            renderProducts();
-            document.getElementById('catalogo')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            selectCategory(category || 'todos');
             return;
         }
         if (action === 'cart') {
