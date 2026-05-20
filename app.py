@@ -48,18 +48,20 @@ with app.app_context():
     db.create_all()
 
 
+DISCOUNT = 0.20
+
 products = [
-    {'id': 1, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo TODO PASA', 'description': 'Anillo premium con grabado distintivo.', 'price': 45000.00, 'image': '/static/images/ring-todo-pasa.jpg'},
-    {'id': 2, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo Oval', 'description': 'Anillo con diseño oval elegante.', 'price': 45000.00, 'image': '/static/images/ring-oval.jpg'},
-    {'id': 3, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo Corona', 'description': 'Anillo con estilo clásico y superior.', 'price': 45000.00, 'image': '/static/images/ring-crown.jpg'},
-    {'id': 4, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo Número 32', 'description': 'Anillo con diseño numerado de colección.', 'price': 45000.00, 'image': '/static/images/ring-32.jpg'},
-    {'id': 5, 'category': 'anillos', 'category_label': 'Anillos', 'name': 'Anillo Stone', 'description': 'Anillo con piedra roja vibrante.', 'price': 65.00, 'image': '/static/images/ring-redstone.jpg'},
-    {'id': 6, 'category': 'pulseras', 'category_label': 'Pulseras', 'name': 'Pulsera Dorada', 'description': 'Pulsera de estilo ancho y moderno.', 'price': 110000.00, 'image': '/static/images/pulsera-band.jpg'},
-    {'id': 7, 'category': 'pulseras', 'category_label': 'Pulseras', 'name': 'Pulsera Lux', 'description': 'Pulsera sólida con acabado premium.', 'price': 110000.00, 'image': '/static/images/pulsera-band2.jpg'},
-    {'id': 8, 'category': 'collares', 'category_label': 'Collares', 'name': 'Collar Trenza', 'description': 'Cadena trenzada con brillo dorado.', 'price': 120.00, 'image': '/static/images/necklace-1.jpg'},
-    {'id': 9, 'category': 'collares', 'category_label': 'Collares', 'name': 'Collar Clásico', 'description': 'Cadena clásica para uso diario.', 'price': 140.00, 'image': '/static/images/necklace-2.jpg'},
-    {'id': 10, 'category': 'combos', 'category_label': 'Combo', 'name': 'Combo Elegance', 'description': 'Set con cadena y pieza de lujo.', 'price': 220.00, 'image': '/static/images/combo-1.jpg'},
-    {'id': 11, 'category': 'combos', 'category_label': 'Combo', 'name': 'Combo Brillante', 'description': 'Set especial con diseño distintivo.', 'price': 245.00, 'image': '/static/images/combo-2.jpg'}
+    {'id': 1,  'category': 'anillos',  'category_label': 'Anillos',  'name': 'Anillo TODO PASA',   'description': 'Anillo premium con grabado distintivo.',        'price': round(45000.00 * (1 - DISCOUNT), 2), 'original_price': 45000.00,  'image': '/static/images/ring-todo-pasa.jpg'},
+    {'id': 2,  'category': 'anillos',  'category_label': 'Anillos',  'name': 'Anillo Oval',         'description': 'Anillo con diseño oval elegante.',              'price': round(45000.00 * (1 - DISCOUNT), 2), 'original_price': 45000.00,  'image': '/static/images/ring-oval.jpg'},
+    {'id': 3,  'category': 'anillos',  'category_label': 'Anillos',  'name': 'Anillo Corona',       'description': 'Anillo con estilo clásico y superior.',         'price': round(45000.00 * (1 - DISCOUNT), 2), 'original_price': 45000.00,  'image': '/static/images/ring-crown.jpg'},
+    {'id': 4,  'category': 'anillos',  'category_label': 'Anillos',  'name': 'Anillo Número 32',    'description': 'Anillo con diseño numerado de colección.',      'price': round(45000.00 * (1 - DISCOUNT), 2), 'original_price': 45000.00,  'image': '/static/images/ring-32.jpg'},
+    {'id': 5,  'category': 'anillos',  'category_label': 'Anillos',  'name': 'Anillo Stone',        'description': 'Anillo con piedra roja vibrante.',              'price': round(65.00    * (1 - DISCOUNT), 2), 'original_price': 65.00,     'image': '/static/images/ring-redstone.jpg'},
+    {'id': 6,  'category': 'pulseras', 'category_label': 'Pulseras', 'name': 'Pulsera Dorada',      'description': 'Pulsera de estilo ancho y moderno.',            'price': round(110000.00* (1 - DISCOUNT), 2), 'original_price': 110000.00, 'image': '/static/images/pulsera-band.jpg'},
+    {'id': 7,  'category': 'pulseras', 'category_label': 'Pulseras', 'name': 'Pulsera Lux',         'description': 'Pulsera sólida con acabado premium.',           'price': round(110000.00* (1 - DISCOUNT), 2), 'original_price': 110000.00, 'image': '/static/images/pulsera-band2.jpg'},
+    {'id': 8,  'category': 'collares', 'category_label': 'Collares', 'name': 'Collar Trenza',       'description': 'Cadena trenzada con brillo dorado.',            'price': round(120.00   * (1 - DISCOUNT), 2), 'original_price': 120.00,    'image': '/static/images/necklace-1.jpg'},
+    {'id': 9,  'category': 'collares', 'category_label': 'Collares', 'name': 'Collar Clásico',      'description': 'Cadena clásica para uso diario.',               'price': round(140.00   * (1 - DISCOUNT), 2), 'original_price': 140.00,    'image': '/static/images/necklace-2.jpg'},
+    {'id': 10, 'category': 'combos',   'category_label': 'Combo',    'name': 'Combo Elegance',      'description': 'Set con cadena y pieza de lujo.',               'price': round(220.00   * (1 - DISCOUNT), 2), 'original_price': 220.00,    'image': '/static/images/combo-1.jpg'},
+    {'id': 11, 'category': 'combos',   'category_label': 'Combo',    'name': 'Combo Brillante',     'description': 'Set especial con diseño distintivo.',           'price': round(245.00   * (1 - DISCOUNT), 2), 'original_price': 245.00,    'image': '/static/images/combo-2.jpg'},
 ]
 
 @app.route('/')

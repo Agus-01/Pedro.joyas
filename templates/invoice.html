@@ -3,39 +3,101 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Factura de Compra</title>
+    <title>Factura – Pedro Joyas</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 2rem; background: #f5f0e8; color: #141414; }
-        .invoice { max-width: 760px; margin: 0 auto; background: #ffffff; padding: 2rem; border-radius: 24px; box-shadow: 0 24px 72px rgba(0,0,0,0.12); }
-        h1 { margin-top: 0; color: #2a2a2a; }
-        .header, .footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 1rem; }
-        .invoice-items { width: 100%; border-collapse: collapse; margin-top: 1.5rem; }
-        .invoice-items th, .invoice-items td { padding: 1rem 0.75rem; border-bottom: 1px solid #e5e1d8; }
-        .invoice-items th { text-align: left; color: #555; }
-        .total { text-align: right; font-size: 1.1rem; font-weight: 700; }
-        .notice { margin-top: 1.5rem; padding: 1rem; background: #fff4d6; border-radius: 16px; color: #6b4f09; }
+        * { box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; margin: 0; padding: 2rem; background: #f5f0e8; color: #141414; }
+        .invoice { max-width: 780px; margin: 0 auto; background: #fff; padding: 2.5rem; border-radius: 24px; box-shadow: 0 24px 72px rgba(0,0,0,0.12); }
+
+        .invoice-header { display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 1.5rem; margin-bottom: 2rem; padding-bottom: 1.5rem; border-bottom: 2px solid #f0e8d0; }
+        .brand { display: flex; align-items: center; gap: 1rem; }
+        .brand img { width: 60px; height: 60px; border-radius: 50%; object-fit: cover; }
+        .brand h1 { margin: 0; font-size: 1.4rem; color: #2a2a2a; }
+        .brand p { margin: 0.2rem 0 0; color: #b8860b; font-size: 0.9rem; }
+
+        .invoice-meta { text-align: right; }
+        .invoice-meta h2 { margin: 0 0 0.5rem; font-size: 1.1rem; color: #555; text-transform: uppercase; letter-spacing: 0.1em; }
+        .invoice-meta p { margin: 0.2rem 0; font-size: 0.9rem; color: #666; }
+
+        .status-badge { display: inline-block; padding: 0.4rem 1rem; border-radius: 999px; font-size: 0.85rem; font-weight: 700; margin-top: 0.5rem; }
+        .status-approved { background: #d1fae5; color: #065f46; }
+        .status-pending { background: #fef3c7; color: #92400e; }
+        .status-failure { background: #fee2e2; color: #991b1b; }
+
+        .buyer-section { display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem; margin-bottom: 2rem; }
+        .info-box { background: #faf8f3; border-radius: 16px; padding: 1.2rem 1.5rem; }
+        .info-box h3 { margin: 0 0 0.8rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #b8860b; }
+        .info-box p { margin: 0.3rem 0; font-size: 0.95rem; color: #333; }
+
+        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        thead tr { background: #faf8f3; }
+        th { padding: 0.9rem 1rem; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 2px solid #f0e8d0; }
+        td { padding: 1rem; border-bottom: 1px solid #f0e8d0; font-size: 0.95rem; }
+        tbody tr:last-child td { border-bottom: none; }
+
+        .total-row { display: flex; justify-content: flex-end; align-items: center; gap: 1rem; padding: 1rem 1rem; background: #faf8f3; border-radius: 16px; margin-bottom: 1.5rem; }
+        .total-row span:first-child { color: #555; font-size: 1rem; }
+        .total-row span:last-child { font-size: 1.5rem; font-weight: 700; color: #b8860b; }
+
+        .notice { padding: 1rem 1.2rem; background: #fff4d6; border-radius: 16px; color: #6b4f09; font-size: 0.9rem; line-height: 1.6; margin-bottom: 1.5rem; }
+
+        .actions { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .btn-print { padding: 0.85rem 1.8rem; border-radius: 999px; border: none; background: linear-gradient(135deg, #dac47d, #f1c66a); color: #111; font-weight: 700; cursor: pointer; font-size: 0.95rem; }
+        .btn-back { padding: 0.85rem 1.8rem; border-radius: 999px; border: 1px solid #ddd; background: #fff; color: #333; cursor: pointer; font-size: 0.95rem; text-decoration: none; display: inline-flex; align-items: center; }
+
+        @media (max-width: 600px) {
+            .buyer-section { grid-template-columns: 1fr; }
+            .invoice-header { flex-direction: column; }
+            .invoice-meta { text-align: left; }
+        }
+        @media print {
+            body { background: #fff; padding: 0; }
+            .actions { display: none; }
+            .invoice { box-shadow: none; border-radius: 0; }
+        }
     </style>
 </head>
 <body>
     <div class="invoice">
-        <div class="header">
-            <div>
-                <h1>Factura de Compra</h1>
-                <p>ID de orden: {{ order.id }}</p>
+        <div class="invoice-header">
+            <div class="brand">
+                <img src="/static/images/logo.png" alt="Pedro Joyas" />
+                <div>
+                    <h1>Pedro Joyas</h1>
+                    <p>Joyería Premium</p>
+                </div>
             </div>
-            <div>
-                <p><strong>Cliente:</strong> {{ order.buyer_name }}</p>
-                <p><strong>Email:</strong> {{ order.buyer_email }}</p>
-                <p><strong>Alias/DNI:</strong> {{ order.buyer_dni }}</p>
+            <div class="invoice-meta">
+                <h2>Comprobante de compra</h2>
+                <p>Orden: <strong>#{{ order.id }}</strong></p>
+                <p>Fecha: <strong>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</strong></p>
+                <p>Método: <strong>{{ order.payment_method | capitalize }}</strong></p>
+                <span class="status-badge" id="status-badge">Verificando...</span>
             </div>
         </div>
-        <table class="invoice-items">
+
+        <div class="buyer-section">
+            <div class="info-box">
+                <h3>Datos del comprador</h3>
+                <p><strong>{{ order.buyer_name }}</strong></p>
+                <p>{{ order.buyer_email }}</p>
+                <p>Alias/DNI: {{ order.buyer_dni }}</p>
+            </div>
+            <div class="info-box">
+                <h3>Resumen</h3>
+                <p>{{ order.items | length }} producto(s)</p>
+                <p>Total: <strong>${{ '%.2f' | format(order.total) }}</strong></p>
+                <p>Estado DB: <strong>{{ order.payment_status }}</strong></p>
+            </div>
+        </div>
+
+        <table>
             <thead>
                 <tr>
                     <th>Producto</th>
                     <th>Cantidad</th>
                     <th>Precio unitario</th>
-                    <th>Total</th>
+                    <th>Subtotal</th>
                 </tr>
             </thead>
             <tbody>
@@ -49,10 +111,30 @@
                 {% endfor %}
             </tbody>
         </table>
-        <p class="total">Importe total: ${{ '%.2f' | format(order.total) }}</p>
+
+        <div class="total-row">
+            <span>Importe total</span>
+            <span>${{ '%.2f' | format(order.total) }}</span>
+        </div>
+
         <div class="notice">
-            <p>Esta factura se generó al iniciar el pago. Guarda este documento como comprobante.</p>
+            Guardá este comprobante como respaldo de tu compra. Si tenés algún problema, contactanos por WhatsApp o email.
+        </div>
+
+        <div class="actions">
+            <button class="btn-print" onclick="window.print()">🖨 Imprimir / Guardar PDF</button>
+            <a class="btn-back" href="/">← Volver a la tienda</a>
         </div>
     </div>
+
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const status = params.get('status') || params.get('collection_status') || 'pending';
+        const badge = document.getElementById('status-badge');
+        const labels = { approved: ['Pago aprobado ✓', 'status-approved'], pending: ['Pago pendiente', 'status-pending'], failure: ['Pago rechazado', 'status-failure'], rejected: ['Pago rechazado', 'status-failure'] };
+        const [text, cls] = labels[status] || labels['pending'];
+        badge.textContent = text;
+        badge.classList.add(cls);
+    </script>
 </body>
 </html>
