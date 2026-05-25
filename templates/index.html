@@ -439,122 +439,147 @@
     </main>
 
     <!-- =========================
-         MODAL
+         MODAL CHECKOUT
     ========================== -->
 
-    <div
-        class="modal"
-        id="checkout-modal"
-        aria-hidden="true"
-    >
+    <div class="modal" id="checkout-modal" aria-hidden="true">
+        <div class="modal-panel checkout-modal-panel">
+            <button class="modal-close" id="close-checkout">×</button>
 
-        <div class="modal-panel">
-
-            <button
-                class="modal-close"
-                id="close-checkout"
-            >
-                ×
-            </button>
-
-            <h2>
-                Finalizar compra
-            </h2>
-
-            <p>
-                Completa los datos para procesar el pago
-                y recibir la factura.
-            </p>
+            <div class="checkout-steps">
+                <div class="checkout-step active" id="step-dot-1">1</div>
+                <div class="checkout-step-line"></div>
+                <div class="checkout-step" id="step-dot-2">2</div>
+                <div class="checkout-step-line"></div>
+                <div class="checkout-step" id="step-dot-3">3</div>
+            </div>
 
             <form id="checkout-form">
 
-                <div class="form-group">
+                <!-- PASO 1: DATOS PERSONALES -->
+                <div class="checkout-page active" id="step-1">
+                    <h2>Tus datos</h2>
+                    <p class="form-note">Necesitamos tus datos para procesar el pedido.</p>
 
-                    <label for="buyer-name">
-                        Nombre completo
-                    </label>
-
-                    <input
-                        id="buyer-name"
-                        name="buyerName"
-                        type="text"
-                        required
-                    />
-
+                    <div class="form-group">
+                        <label>Nombre completo</label>
+                        <input name="buyerName" type="text" placeholder="Juan Pérez" required />
+                    </div>
+                    <div class="form-group">
+                        <label>Correo electrónico</label>
+                        <input name="buyerEmail" type="email" placeholder="juan@email.com" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>DNI</label>
+                            <input name="buyerDni" type="text" placeholder="12345678" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Teléfono / WhatsApp</label>
+                            <input name="buyerPhone" type="tel" placeholder="+54 9 11 1234 5678" />
+                        </div>
+                    </div>
+                    <button type="button" class="btn btn-primary" onclick="checkoutNextStep(2)">Continuar →</button>
                 </div>
 
-                <div class="form-group">
+                <!-- PASO 2: ENVIO -->
+                <div class="checkout-page" id="step-2">
+                    <h2>Dirección de envío</h2>
+                    <p class="form-note">Completá dónde querés recibir tu pedido.</p>
 
-                    <label for="buyer-email">
-                        Correo electrónico
-                    </label>
-
-                    <input
-                        id="buyer-email"
-                        name="buyerEmail"
-                        type="email"
-                        required
-                    />
-
+                    <div class="form-group">
+                        <label>Calle y número</label>
+                        <input name="shippingAddress" type="text" placeholder="Av. Corrientes 1234" required />
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Ciudad</label>
+                            <input name="shippingCity" type="text" placeholder="Buenos Aires" required />
+                        </div>
+                        <div class="form-group">
+                            <label>Provincia</label>
+                            <input name="shippingProvince" type="text" placeholder="CABA" required />
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Código postal</label>
+                        <input name="shippingZip" type="text" placeholder="1043" />
+                    </div>
+                    <div class="checkout-nav">
+                        <button type="button" class="btn btn-secondary" onclick="checkoutNextStep(1)">← Volver</button>
+                        <button type="button" class="btn btn-primary" onclick="checkoutNextStep(3)">Continuar →</button>
+                    </div>
                 </div>
 
-                <div class="form-group">
+                <!-- PASO 3: PAGO -->
+                <div class="checkout-page" id="step-3">
+                    <h2>Método de pago</h2>
 
-                    <label for="buyer-dni">
-                        Alias/DNI
-                    </label>
+                    <div class="payment-options">
+                        <label class="payment-option active" id="opt-mp">
+                            <input type="radio" name="paymentMethod" value="mercadopago" checked />
+                            <div class="payment-option-body">
+                                <span class="payment-icon">💳</span>
+                                <div>
+                                    <strong>Mercado Pago</strong>
+                                    <small>Tarjeta de crédito, débito, efectivo</small>
+                                </div>
+                            </div>
+                        </label>
+                        <label class="payment-option" id="opt-alias">
+                            <input type="radio" name="paymentMethod" value="alias" />
+                            <div class="payment-option-body">
+                                <span class="payment-icon">🏦</span>
+                                <div>
+                                    <strong>Transferencia / Alias</strong>
+                                    <small>CBU o alias bancario</small>
+                                </div>
+                            </div>
+                        </label>
+                    </div>
 
-                    <input
-                        id="buyer-dni"
-                        name="buyerDni"
-                        type="text"
-                        placeholder="Alias de cuenta / DNI"
-                        required
-                    />
+                    <div class="order-summary" id="order-summary"></div>
 
-                </div>
+                    <div class="checkout-nav">
+                        <button type="button" class="btn btn-secondary" onclick="checkoutNextStep(2)">← Volver</button>
+                        <button type="submit" class="btn btn-primary" id="confirm-btn">Confirmar compra</button>
+                    </div>
 
-                <div class="form-group">
-
-                    <label>
-                        Forma de pago
-                    </label>
-
-                    <select
-                        id="payment-method"
-                        name="paymentMethod"
-                        required
-                    >
-                        <option value="mercadopago">
-                            Mercado Pago
-                        </option>
-
-                        <option value="alias">
-                            Alias / Transferencia
-                        </option>
-                    </select>
-
-                </div>
-
-                <button
-                    type="submit"
-                    class="btn btn-primary"
-                >
-                    Confirmar compra
-                </button>
-
-                <div class="form-note">
-                    Al confirmar serás redirigido a Mercado Pago
-                    o recibirás los datos de pago.
+                    <p class="form-note" style="margin-top:1rem">
+                        🔒 Pago 100% seguro. Tus datos están protegidos.
+                    </p>
                 </div>
 
             </form>
-
         </div>
-
     </div>
 
-    <!-- NOTIFICATION -->
+    <!-- MODAL TRANSFERENCIA -->
+    <div class="modal" id="transfer-modal" aria-hidden="true">
+        <div class="modal-panel">
+            <h2 style="color:#f1c66a">&#127968; Datos para transferir</h2>
+            <p style="color:#ccc">Tu pedido fue registrado. Realizá la transferencia con los siguientes datos:</p>
+            <div class="transfer-info">
+                <div class="transfer-row">
+                    <span>Alias</span>
+                    <strong id="transfer-alias"></strong>
+                </div>
+                <div class="transfer-row">
+                    <span>Monto</span>
+                    <strong id="transfer-amount"></strong>
+                </div>
+                <div class="transfer-row">
+                    <span>Referencia</span>
+                    <strong id="transfer-ref"></strong>
+                </div>
+            </div>
+            <p style="color:#aaa;font-size:0.9rem">Una vez transferido, enviá el comprobante por WhatsApp para confirmar tu pedido.</p>
+            <div style="display:flex;gap:1rem;margin-top:1rem">
+                <a id="transfer-invoice" href="#" target="_blank" class="btn btn-primary" style="flex:1;text-align:center">Ver factura</a>
+                <a href="https://wa.me/5491112345678" target="_blank" class="btn btn-secondary" style="flex:1;text-align:center">Enviar comprobante</a>
+            </div>
+        </div>
+    </div>
     <div class="notification" id="notification"></div>
 
     <!-- WHATSAPP FLOTANTE -->

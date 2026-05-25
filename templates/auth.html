@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ 'Registrarse' if mode == 'register' else 'Iniciar sesión' }} – Pedro Joyas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css?v=4" />
+    <style>
+        .auth-wrap { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+        .auth-card { width: min(480px, 100%); background: rgba(10,10,10,0.98); border-radius: 32px; padding: 2.5rem; box-shadow: 0 0 0 1px rgba(210,157,60,0.45), 0 40px 110px rgba(0,0,0,0.35); }
+        .auth-card h1 { margin: 0 0 0.4rem; color: #f1c66a; font-size: 1.6rem; }
+        .auth-card p { margin: 0 0 2rem; color: #999; font-size: 0.95rem; }
+        .auth-error { background: rgba(255,80,80,0.12); border: 1px solid rgba(255,80,80,0.3); color: #f87171; padding: 0.8rem 1rem; border-radius: 12px; margin-bottom: 1.2rem; font-size: 0.9rem; }
+        .auth-switch { margin-top: 1.5rem; text-align: center; color: #999; font-size: 0.9rem; }
+        .auth-switch a { color: #f1c66a; }
+        .btn-full { width: 100%; padding: 1rem; margin-top: 0.5rem; }
+    </style>
+</head>
+<body>
+    <div class="auth-wrap">
+        <div class="auth-card">
+            <a href="/" style="color:#f1c66a;font-size:0.9rem;">← Volver a la tienda</a>
+            <br><br>
+            {% if mode == 'register' %}
+                <h1>Crear cuenta</h1>
+                <p>Registrate para guardar tus datos y ver tus pedidos.</p>
+                {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+                <form method="POST" action="/registro">
+                    <div class="form-group"><label>Nombre completo</label><input name="name" type="text" required placeholder="Juan Pérez" /></div>
+                    <div class="form-group"><label>Email</label><input name="email" type="email" required placeholder="juan@email.com" /></div>
+                    <div class="form-group"><label>Contraseña</label><input name="password" type="password" required placeholder="Mínimo 6 caracteres" minlength="6" /></div>
+                    <button type="submit" class="btn btn-primary btn-full">Crear cuenta</button>
+                </form>
+                <div class="auth-switch">¿Ya tenés cuenta? <a href="/login">Iniciá sesión</a></div>
+            {% else %}
+                <h1>Iniciar sesión</h1>
+                <p>Bienvenido de vuelta a Pedro Joyas.</p>
+                {% if error %}<div class="auth-error">{{ error }}</div>{% endif %}
+                <form method="POST" action="/login">
+                    <div class="form-group"><label>Email</label><input name="email" type="email" required placeholder="juan@email.com" /></div>
+                    <div class="form-group"><label>Contraseña</label><input name="password" type="password" required /></div>
+                    <button type="submit" class="btn btn-primary btn-full">Iniciar sesión</button>
+                </form>
+                <div class="auth-switch">¿No tenés cuenta? <a href="/registro">Registrate</a></div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

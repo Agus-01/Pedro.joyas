@@ -1,0 +1,3 @@
+PS C:\Users\agust\OneDrive\Escritorio\Pagina wed> git add static/css/styles.css static/js/main.js templates/index.html
+>> git commit -m "Actualizar menú, footer y panel interactivo"
+>> git push origin main

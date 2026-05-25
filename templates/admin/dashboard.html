@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard – Pedro Joyas</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: 'Inter', sans-serif; background: #0a0a0a; color: #f7f4ef; }
+        .sidebar { position: fixed; top: 0; left: 0; width: 220px; height: 100vh; background: #111; border-right: 1px solid rgba(210,157,60,0.2); padding: 2rem 1.2rem; display: flex; flex-direction: column; gap: 0.5rem; }
+        .sidebar h2 { color: #f1c66a; font-size: 1rem; margin-bottom: 1rem; }
+        .sidebar a { color: #ccc; text-decoration: none; padding: 0.7rem 1rem; border-radius: 12px; font-size: 0.9rem; transition: background 0.2s; }
+        .sidebar a:hover, .sidebar a.active { background: rgba(241,198,106,0.12); color: #f1c66a; }
+        .main { margin-left: 220px; padding: 2rem; }
+        .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px,1fr)); gap: 1rem; margin-bottom: 2rem; }
+        .stat-card { background: #111; border: 1px solid rgba(210,157,60,0.25); border-radius: 18px; padding: 1.2rem 1.5rem; }
+        .stat-card span { display: block; color: #888; font-size: 0.82rem; margin-bottom: 0.4rem; }
+        .stat-card strong { font-size: 1.6rem; color: #f1c66a; }
+        .section-title { font-size: 1.1rem; font-weight: 600; margin: 2rem 0 1rem; color: #f7f4ef; display: flex; justify-content: space-between; align-items: center; }
+        .btn-sm { padding: 0.5rem 1rem; border-radius: 999px; border: none; background: linear-gradient(135deg,#dac47d,#f1c66a); color: #111; font-weight: 700; cursor: pointer; font-size: 0.85rem; text-decoration: none; }
+        table { width: 100%; border-collapse: collapse; background: #111; border-radius: 18px; overflow: hidden; }
+        th { padding: 0.9rem 1rem; text-align: left; font-size: 0.8rem; color: #888; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        td { padding: 0.9rem 1rem; font-size: 0.88rem; border-bottom: 1px solid rgba(255,255,255,0.04); vertical-align: middle; }
+        tr:last-child td { border-bottom: none; }
+        .badge { display: inline-block; padding: 0.25rem 0.7rem; border-radius: 999px; font-size: 0.75rem; font-weight: 600; }
+        .badge-approved { background: rgba(74,222,128,0.15); color: #4ade80; }
+        .badge-pending { background: rgba(251,191,36,0.15); color: #fbbf24; }
+        .badge-failure { background: rgba(248,113,113,0.15); color: #f87171; }
+        .badge-shipped { background: rgba(96,165,250,0.15); color: #60a5fa; }
+        select, input[type=text] { background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: #fff; padding: 0.4rem 0.6rem; border-radius: 8px; font-size: 0.82rem; }
+        form.inline { display: inline; }
+        .tab-btns { display: flex; gap: 0.5rem; margin-bottom: 1.5rem; }
+        .tab-btn { padding: 0.6rem 1.2rem; border-radius: 999px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.04); color: #ccc; cursor: pointer; font-size: 0.88rem; }
+        .tab-btn.active { background: rgba(241,198,106,0.15); border-color: rgba(241,198,106,0.4); color: #f1c66a; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        @media (max-width: 768px) { .sidebar { display: none; } .main { margin-left: 0; } }
+    </style>
+</head>
+<body>
+
+<div class="sidebar">
+    <h2>🏪 Pedro Joyas</h2>
+    <a href="/admin" class="active">Dashboard</a>
+    <a href="/admin/producto/nuevo">+ Nuevo producto</a>
+    <a href="/" target="_blank">Ver tienda</a>
+    <a href="/logout" style="margin-top:auto;color:#f87171">Salir</a>
+</div>
+
+<div class="main">
+    <h1 style="margin-bottom:0.3rem">Dashboard</h1>
+    <p style="color:#888;margin-bottom:2rem">Bienvenido al panel de administración</p>
+
+    <!-- STATS -->
+    <div class="stats">
+        <div class="stat-card"><span>Total órdenes</span><strong>{{ stats.total_orders }}</strong></div>
+        <div class="stat-card"><span>Órdenes pagas</span><strong>{{ stats.paid_orders }}</strong></div>
+        <div class="stat-card"><span>Ingresos</span><strong>${{ '{:,.0f}'.format(stats.total_revenue) }}</strong></div>
+        <div class="stat-card"><span>Productos</span><strong>{{ stats.total_products }}</strong></div>
+        <div class="stat-card"><span>Clientes</span><strong>{{ stats.total_users }}</strong></div>
+    </div>
+
+    <!-- TABS -->
+    <div class="tab-btns">
+        <button class="tab-btn active" onclick="showTab('orders')">Pedidos</button>
+        <button class="tab-btn" onclick="showTab('products')">Productos</button>
+        <button class="tab-btn" onclick="showTab('users')">Clientes</button>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div class="tab-content active" id="tab-orders">
+        <table>
+            <thead><tr><th>Orden</th><th>Cliente</th><th>Total</th><th>Pago</th><th>Envío</th><th>Fecha</th><th>Acciones</th></tr></thead>
+            <tbody>
+            {% for o in orders %}
+            <tr>
+                <td><strong>#{{ o.id }}</strong></td>
+                <td>{{ o.buyer_name }}<br><small style="color:#888">{{ o.buyer_email }}</small></td>
+                <td>${{ '{:,.0f}'.format(o.total) }}</td>
+                <td><span class="badge badge-{{ o.payment_status }}">{{ o.payment_status }}</span></td>
+                <td><span class="badge badge-{{ 'shipped' if o.shipping_status == 'shipped' else 'pending' }}">{{ o.shipping_status }}</span></td>
+                <td style="color:#888;font-size:0.8rem">{{ o.created_at.strftime('%d/%m/%Y') }}</td>
+                <td>
+                    <form method="POST" action="/admin/orden/{{ o.id }}/estado" class="inline">
+                        <select name="shipping_status" onchange="this.form.submit()">
+                            <option value="pending" {{ 'selected' if o.shipping_status == 'pending' }}>Pendiente</option>
+                            <option value="preparing" {{ 'selected' if o.shipping_status == 'preparing' }}>Preparando</option>
+                            <option value="shipped" {{ 'selected' if o.shipping_status == 'shipped' }}>Enviado</option>
+                            <option value="delivered" {{ 'selected' if o.shipping_status == 'delivered' }}>Entregado</option>
+                        </select>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="tab-content" id="tab-products">
+        <div class="section-title">
+            Productos
+            <a href="/admin/producto/nuevo" class="btn-sm">+ Nuevo</a>
+        </div>
+        <table>
+            <thead><tr><th>Producto</th><th>Categoría</th><th>Precio</th><th>Talles / Stock</th><th>Estado</th><th>Acciones</th></tr></thead>
+            <tbody>
+            {% for p in products %}
+            <tr>
+                <td><strong>{{ p.name }}</strong></td>
+                <td>{{ p.category_label }}</td>
+                <td>${{ '{:,.0f}'.format(p.price) }}</td>
+                <td style="font-size:0.8rem;color:#aaa">
+                    {% for v in p.variants %}{{ v.size }}: {{ v.stock }}{% if not loop.last %}, {% endif %}{% endfor %}
+                </td>
+                <td><span class="badge {{ 'badge-approved' if p.active else 'badge-failure' }}">{{ 'Activo' if p.active else 'Inactivo' }}</span></td>
+                <td>
+                    <a href="/admin/producto/{{ p.id }}/editar" class="btn-sm">Editar</a>
+                    <form method="POST" action="/admin/producto/{{ p.id }}/eliminar" class="inline" style="margin-left:0.4rem">
+                        <button type="submit" class="btn-sm" style="background:rgba(248,113,113,0.2);color:#f87171" onclick="return confirm('¿Desactivar producto?')">Desactivar</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="tab-content" id="tab-users">
+        <table>
+            <thead><tr><th>Nombre</th><th>Email</th><th>Teléfono</th><th>Registrado</th></tr></thead>
+            <tbody>
+            {% for u in users %}
+            <tr>
+                <td>{{ u.name }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.phone or '—' }}</td>
+                <td style="color:#888;font-size:0.8rem">{{ u.created_at.strftime('%d/%m/%Y') }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+function showTab(name) {
+    document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById('tab-' + name).classList.add('active');
+    event.target.classList.add('active');
+}
+</script>
+</body>
+</html>

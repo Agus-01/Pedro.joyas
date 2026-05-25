@@ -234,8 +234,60 @@ function showNotification(message) {
     setTimeout(() => notification.classList.remove('show'), 2800);
 }
 
+// --- Checkout steps ---
+function checkoutNextStep(step) {
+    const current = document.querySelector('.checkout-page.active');
+    const currentStep = parseInt(current.id.replace('step-', ''));
+    if (step > currentStep) {
+        const required = current.querySelectorAll('[required]');
+        for (const field of required) {
+            if (!field.value.trim()) {
+                field.focus();
+                showNotification('Completá todos los campos requeridos.');
+                return;
+            }
+        }
+    }
+    document.querySelectorAll('.checkout-page').forEach(p => p.classList.remove('active'));
+    document.getElementById(`step-${step}`).classList.add('active');
+    for (let i = 1; i <= 3; i++) {
+        const dot = document.getElementById(`step-dot-${i}`);
+        dot.classList.remove('active', 'done');
+        if (i < step) dot.classList.add('done');
+        else if (i === step) dot.classList.add('active');
+    }
+    if (step === 3) renderOrderSummary();
+}
+
+function renderOrderSummary() {
+    const summary = document.getElementById('order-summary');
+    if (!summary || cart.length === 0) return;
+    const total = cart.reduce((s, i) => s + i.price * i.quantity, 0);
+    summary.innerHTML = `
+        ${cart.map(i => `
+            <div class="order-summary-item">
+                <span>${i.name} x${i.quantity}</span>
+                <span>$${(i.price * i.quantity).toLocaleString('es-AR')}</span>
+            </div>
+        `).join('')}
+        <div class="order-summary-total">
+            <span>Total</span>
+            <span>$${total.toLocaleString('es-AR')}</span>
+        </div>
+    `;
+}
+
+document.querySelectorAll('.payment-option').forEach(opt => {
+    opt.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('active'));
+        opt.classList.add('active');
+        opt.querySelector('input[type=radio]').checked = true;
+    });
+});
+
 // --- Checkout Modal ---
 checkoutButton.addEventListener('click', () => {
+    checkoutNextStep(1);
     checkoutModal.classList.add('active');
 });
 
@@ -249,17 +301,22 @@ checkoutModal.addEventListener('click', e => {
 
 checkoutForm.addEventListener('submit', async event => {
     event.preventDefault();
-    const submitBtn = checkoutForm.querySelector('button[type=submit]');
-    submitBtn.disabled = true;
-    submitBtn.textContent = 'Procesando...';
+    const confirmBtn = document.getElementById('confirm-btn');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'Procesando...';
 
-    const formData = new FormData(checkoutForm);
+    const fd = new FormData(checkoutForm);
     const order = {
-        buyerName: formData.get('buyerName'),
-        buyerEmail: formData.get('buyerEmail'),
-        buyerDni: formData.get('buyerDni'),
-        paymentMethod: formData.get('paymentMethod'),
-        items: cart.map(item => ({ id: item.id, title: item.name, quantity: item.quantity, unit_price: item.price }))
+        buyerName:        fd.get('buyerName'),
+        buyerEmail:       fd.get('buyerEmail'),
+        buyerDni:         fd.get('buyerDni'),
+        buyerPhone:       fd.get('buyerPhone'),
+        shippingAddress:  fd.get('shippingAddress'),
+        shippingCity:     fd.get('shippingCity'),
+        shippingProvince: fd.get('shippingProvince'),
+        shippingZip:      fd.get('shippingZip'),
+        paymentMethod:    fd.get('paymentMethod'),
+        items: cart.map(i => ({ id: i.id, title: i.name, quantity: i.quantity, unit_price: i.price }))
     };
 
     try {
@@ -272,8 +329,8 @@ checkoutForm.addEventListener('submit', async event => {
         if (!response.ok) {
             const error = await response.json();
             showNotification(error.message || 'Error procesando la compra.');
-            submitBtn.disabled = false;
-            submitBtn.textContent = 'Confirmar compra';
+            confirmBtn.disabled = false;
+            confirmBtn.textContent = 'Confirmar compra';
             return;
         }
 
@@ -281,16 +338,31 @@ checkoutForm.addEventListener('submit', async event => {
         cart = [];
         saveCartToStorage();
         updateCart();
-        showNotification('Compra iniciada. Redirigiendo...');
         checkoutModal.classList.remove('active');
-        window.open(result.invoice_url, '_blank');
-        window.location.href = result.payment_url;
+
+        if (result.payment_url) {
+            showNotification('Redirigiendo a Mercado Pago...');
+            setTimeout(() => { window.location.href = result.payment_url; }, 800);
+        } else {
+            showTransferInfo(result);
+        }
     } catch {
-        showNotification('Error de conexión. Intenta nuevamente.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Confirmar compra';
+        showNotification('Error de conexión. Intentá nuevamente.');
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Confirmar compra';
     }
 });
+
+function showTransferInfo(result) {
+    const modal = document.getElementById('transfer-modal');
+    if (modal) {
+        document.getElementById('transfer-alias').textContent  = result.alias || '';
+        document.getElementById('transfer-amount').textContent = `$${result.transfer_amount.toLocaleString('es-AR')}`;
+        document.getElementById('transfer-ref').textContent    = result.order_id || '';
+        document.getElementById('transfer-invoice').href       = result.invoice_url;
+        modal.classList.add('active');
+    }
+}
 
 // --- Menu ---
 const menuBtn = document.getElementById('menu-btn');
