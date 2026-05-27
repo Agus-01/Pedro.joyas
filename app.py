@@ -414,30 +414,103 @@ def admin_login():
 # =========================
 #   NOTIFICACIONES
 # =========================
+# =========================
+#   NOTIFICACIONES
+# =========================
 
 def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
     items_text = '\n'.join(f"  - {i['title']} x{i['quantity']} = ${i['total']:,.0f}" for i in order.items)
     address = f"{order.shipping_address}, {order.shipping_city}, {order.shipping_province}" if order.shipping_address else 'No especificada'
 
+    # 1. Si el pago está APROBADO, armamos la Factura HTML prolija para el cliente y el dueño
     if paid:
-        subject = f'✅ PAGO APROBADO #{order.id} - {order.buyer_name}'
-        body = f'PAGO APROBADO\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}'
-    elif alias_info:
-        subject = f'🛒 Nueva orden #{order.id} - Transferencia - {order.buyer_name}'
-        body = f'Nueva orden por transferencia\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}\nAlias: {alias_info["alias"]}\nReferencia: {alias_info["reference"]}'
+        subject = f'✅ Comprobante de Compra #{order.id} - Pedro Joyas'
+        
+        # Construimos las filas de la tabla de productos dinámicamente
+        tabla_productos_html = ""
+        for i in order.items:
+            tabla_productos_html += f"""
+            <tr>
+                <td style="padding: 10px; border-bottom: 1px solid #eee;">{i['title']} x{i['quantity']}</td>
+                <td style="padding: 10px; border-bottom: 1px solid #eee; text-align: right;">${i['total']:,.2f}</td>
+            </tr>
+            """
+
+        # Diseño HTML de la Factura
+        html_body = f"""
+        <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e4e4e4; padding: 30px; border-radius: 8px; color: #333;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <h1 style="color: #d4af37; margin: 0; font-size: 28px; letter-spacing: 1px;">PEDRO JOYAS</h1>
+                <p style="font-size: 12px; color: #777; margin: 5px 0 0 0;">Comprobante Oficial de Pago</p>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
+            
+            <p style="font-size: 15px;">¡Hola <b>{order.buyer_name}</b>! Tu pago ha sido procesado con éxito. A continuación te dejamos el detalle de tu compra:</p>
+            
+            <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 14px;">
+                <b>Número de Orden:</b> #{order.id}<br>
+                <b>DNI:</b> {order.buyer_dni}<br>
+                <b>Teléfono:</b> {order.buyer_phone}<br>
+                <b>Dirección de Envío:</b> {address}<br>
+                <b>Método de Pago:</b> Mercado Pago (Aprobado)
+            </div>
+            
+            <h3 style="color: #444; border-bottom: 2px solid #d4af37; padding-bottom: 5px; margin-top: 25px;">Detalle del Pedido</h3>
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                <thead>
+                    <tr style="background-color: #f5f5f5;">
+                        <th style="padding: 10px; text-align: left; font-weight: bold;">Producto</th>
+                        <th style="padding: 10px; text-align: right; font-weight: bold;">Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {tabla_productos_html}
+                </tbody>
+            </table>
+            
+            <div style="text-align: right; margin-top: 20px; font-size: 18px; font-weight: bold; color: #111;">
+                Total Abonado: <span style="color: #d4af37;">${order.total:,.2f}</span>
+            </div>
+            
+            <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0 20px 0;">
+            
+            <p style="font-size: 12px; color: #999; text-align: center; line-height: 1.5; margin: 0;">
+                Gracias por confiar en nosotros.<br>
+                Si tenés alguna duda con tu pedido, escribinos directamente respondiendo a este correo.<br>
+                <b>Pedro Joyas © 2026</b>
+            </p>
+        </div>
+        """
+        
+        # Enviamos el mail con el HTML renderizado al cliente y a vos (copia)
+        if app.config['MAIL_USERNAME']:
+            try:
+                msg = Message(subject, recipients=[order.buyer_email, OWNER_EMAIL])
+                msg.html = html_body
+                mail.send(msg)
+            except Exception as e:
+                print(f"Error enviando mail HTML: {str(e)}")
+
+    # 2. Casos de órdenes pendientes (Texto común clásico como tenías antes)
     else:
-        subject = f'🛒 Nueva orden #{order.id} - MP - {order.buyer_name}'
-        body = f'Nueva orden con Mercado Pago\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}\nLink MP: {payment_url}'
+        if alias_info:
+            subject = f'🛒 Nueva orden #{order.id} - Transferencia - {order.buyer_name}'
+            body = f'Nueva orden por transferencia\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}\nAlias: {alias_info["alias"]}\nReferencia: {alias_info["reference"]}'
+        else:
+            subject = f'🛒 Nueva orden #{order.id} - MP - {order.buyer_name}'
+            body = f'Nueva orden con Mercado Pago\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}\nLink MP: {payment_url}'
 
-    if OWNER_EMAIL and app.config['MAIL_USERNAME']:
-        try:
-            mail.send(Message(subject, recipients=[OWNER_EMAIL], body=body))
-        except Exception:
-            pass
+        if OWNER_EMAIL and app.config['MAIL_USERNAME']:
+            try:
+                mail.send(Message(subject, recipients=[OWNER_EMAIL], body=body))
+            except Exception:
+                pass
 
-    wa_text = body.replace('\n', '%0A').replace(' ', '%20')[:1000]
+    # Mantener el envío de logs a WhatsApp que ya tenías
+    wa_body = f'PAGO APROBADO\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nTOTAL: ${order.total:,.0f}' if paid else body
+    wa_text = wa_body.replace('\n', '%0A').replace(' ', '%20')[:1000]
     print(f'WA_LINK: https://wa.me/{WHATSAPP_NUMBER}?text={wa_text}')
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
