@@ -50,6 +50,29 @@ INITIAL_PRODUCTS = [
         'stocks': [8, 8, 8, 8],
     },
 
+    {
+        'name': 'Anillo 73',
+        'description': 'Un anillopractico y elegante, con un diseño de líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/anillo5.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo ROLEX Articulado',
+        'description': 'Un anillo que combina la elegancia de la alta joyería con la innovación del diseño articulado. Su estructura flexible se adapta cómodamente al dedo, mientras que su acabado pulido y detalles grabados lo convierten en una pieza de lujo imprescindible.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/rolexa.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+
     # --- PULSERAS (Precio final limpio basado en el valor superior) ---
     {
         'name': 'Pulsera cedusa',
@@ -141,7 +164,7 @@ INITIAL_PRODUCTS = [
         'category': 'combos',
         'category_label': 'Combo',
         'price': 187500.00,
-        'image': '/static/images/combotourbillon.jpg',
+        'image': '/static/images/combotourbillon.jpeg',
         'sizes': ['Único'],
         'stocks': [3],
     },
@@ -158,22 +181,22 @@ INITIAL_PRODUCTS = [
 
     {
         'name': 'Combo Paris',
-        'description': 'El set definitivo para los amantes de las joyas con personalidad. Un imponente conjunto que lleva el clásico estilo Grumet a su máximo nivel de ostentación, combinando tres piezas de brillo salvaje.',
+        'description': 'Un set exclusivo que combina piezas icónicas para crear un look incomparable con un toque de sofisticación parisina. Cada pieza ha sido seleccionada para complementar a la perfección, ofreciendo un equilibrio entre elegancia y modernidad.',
         'category': 'combos',
         'category_label': 'Combo',
         'price': 162500.00,
-        'image': '/static/images/comboparis.jpg',
+        'image': '/static/images/combopais.jpeg',
         'sizes': ['Único'],
         'stocks': [3],
     },
 
     {
         'name': 'Combo Juliana',
-        'description': 'El set definitivo para los amantes de las joyas con personalidad. Un imponente conjunto que lleva el clásico estilo Grumet a su máximo nivel de ostentación, combinando tres piezas de brillo salvaje.',
+        'description': 'Algo mas simple pero elegante capaz de destacar en cualquier ocasión y ademas con una clase que desborda poder.',
         'category': 'combos',
         'category_label': 'Combo',
         'price': 162500.00,
-        'image': '/static/images/combojuliana.jpg',
+        'image': '/static/images/combojuliana.jpeg',
         'sizes': ['Único'],
         'stocks': [3],
     },
