@@ -22,10 +22,14 @@
         <p>Pedro Joyas – Acceso restringido</p>
         {% if error %}<div class="error">{{ error }}</div>{% endif %}
         <form method="POST">
-            <label>Contraseña</label>
-            <input type="password" name="password" required autofocus />
+            <label>Contraseña de administrador</label>
+            <input type="password" name="password" required autofocus autocomplete="current-password" />
             <button type="submit">Ingresar</button>
         </form>
+        <p style="margin-top:1.2rem;font-size:0.8rem;color:#666;line-height:1.5">
+            Solo contraseña (sin email). Por defecto: <code style="color:#aaa">admin1234</code>.
+            Si no funciona, en la carpeta del proyecto ejecutá: <code style="color:#aaa">python reset_admin.py</code>
+        </p>
     </div>
 </body>
 </html>

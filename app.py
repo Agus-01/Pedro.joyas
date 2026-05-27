@@ -1,14 +1,15 @@
 import os
 import uuid
 from flask import Flask, jsonify, render_template, request, url_for, redirect, session, flash
-from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail, Message
 from flask_bcrypt import Bcrypt
-from flask_login import LoginManager, UserMixin, login_user, logout_user, login_required, current_user
-from datetime import datetime
+from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from functools import wraps
 import requests
 from dotenv import load_dotenv
+
+from database import DISCOUNT, init_database
+from models import Order, Product, ProductVariant, User, db
 
 load_dotenv()
 
@@ -18,7 +19,7 @@ app.secret_key = os.environ.get('SECRET_KEY', 'pedro-joyas-secret-2026')
 # Database
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jewelry_store.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+db.init_app(app)
 
 # Auth
 bcrypt = Bcrypt(app)
@@ -42,105 +43,8 @@ OWNER_EMAIL     = os.environ.get('OWNER_EMAIL', '')
 ADMIN_PASSWORD  = os.environ.get('ADMIN_PASSWORD', 'admin1234')
 
 # =========================
-#   MODELOS
+#   AUTH
 # =========================
-
-class User(UserMixin, db.Model):
-    id               = db.Column(db.Integer,     primary_key=True)
-    name             = db.Column(db.String(100),  nullable=False)
-    email            = db.Column(db.String(100),  unique=True, nullable=False)
-    password_hash    = db.Column(db.String(200),  nullable=False)
-    phone            = db.Column(db.String(30),   nullable=True)
-    address          = db.Column(db.String(300),  nullable=True)
-    city             = db.Column(db.String(100),  nullable=True)
-    province         = db.Column(db.String(100),  nullable=True)
-    zip_code         = db.Column(db.String(20),   nullable=True)
-    is_admin         = db.Column(db.Boolean,      default=False)
-    created_at       = db.Column(db.DateTime,     default=datetime.utcnow)
-    orders           = db.relationship('Order', backref='user', lazy=True)
-
-    def set_password(self, password):
-        self.password_hash = bcrypt.generate_password_hash(password).decode('utf-8')
-
-    def check_password(self, password):
-        return bcrypt.check_password_hash(self.password_hash, password)
-
-
-class Product(db.Model):
-    id             = db.Column(db.Integer,    primary_key=True)
-    name           = db.Column(db.String(100), nullable=False)
-    description    = db.Column(db.Text,        nullable=True)
-    category       = db.Column(db.String(50),  nullable=False)
-    category_label = db.Column(db.String(50),  nullable=False)
-    price          = db.Column(db.Float,       nullable=False)
-    original_price = db.Column(db.Float,       nullable=True)
-    image          = db.Column(db.String(300),  nullable=True)
-    active         = db.Column(db.Boolean,     default=True)
-    created_at     = db.Column(db.DateTime,    default=datetime.utcnow)
-    variants       = db.relationship('ProductVariant', backref='product', lazy=True, cascade='all, delete-orphan')
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'name': self.name,
-            'description': self.description,
-            'category': self.category,
-            'category_label': self.category_label,
-            'price': self.price,
-            'original_price': self.original_price,
-            'image': self.image,
-            'active': self.active,
-            'variants': [v.to_dict() for v in self.variants]
-        }
-
-
-class ProductVariant(db.Model):
-    id         = db.Column(db.Integer, primary_key=True)
-    product_id = db.Column(db.Integer, db.ForeignKey('product.id'), nullable=False)
-    size       = db.Column(db.String(50), nullable=False)  # talle/medida
-    stock      = db.Column(db.Integer,   default=0)
-
-    def to_dict(self):
-        return {'id': self.id, 'size': self.size, 'stock': self.stock}
-
-
-class Order(db.Model):
-    id                = db.Column(db.String(20),  primary_key=True)
-    user_id           = db.Column(db.Integer,     db.ForeignKey('user.id'), nullable=True)
-    buyer_name        = db.Column(db.String(100), nullable=False)
-    buyer_email       = db.Column(db.String(100), nullable=False)
-    buyer_dni         = db.Column(db.String(20),  nullable=False)
-    buyer_phone       = db.Column(db.String(30),  nullable=True)
-    shipping_address  = db.Column(db.String(300), nullable=True)
-    shipping_city     = db.Column(db.String(100), nullable=True)
-    shipping_province = db.Column(db.String(100), nullable=True)
-    shipping_zip      = db.Column(db.String(20),  nullable=True)
-    payment_method    = db.Column(db.String(50),  default='mercadopago')
-    items             = db.Column(db.JSON,         nullable=False)
-    total             = db.Column(db.Float,        nullable=False)
-    created_at        = db.Column(db.DateTime,     default=datetime.utcnow)
-    payment_status    = db.Column(db.String(50),   default='pending')
-    shipping_status   = db.Column(db.String(50),   default='pending')
-    mp_payment_id     = db.Column(db.String(100),  nullable=True)
-    notes             = db.Column(db.Text,         nullable=True)
-
-    def to_dict(self):
-        return {
-            'id': self.id,
-            'buyer_name': self.buyer_name,
-            'buyer_email': self.buyer_email,
-            'buyer_phone': self.buyer_phone,
-            'shipping_address': self.shipping_address,
-            'shipping_city': self.shipping_city,
-            'shipping_province': self.shipping_province,
-            'payment_method': self.payment_method,
-            'items': self.items,
-            'total': self.total,
-            'created_at': self.created_at.strftime('%d/%m/%Y %H:%M'),
-            'payment_status': self.payment_status,
-            'shipping_status': self.shipping_status
-        }
-
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -156,50 +60,8 @@ def admin_required(f):
     return decorated
 
 
-# =========================
-#   SEED PRODUCTOS
-# =========================
-
-DISCOUNT = 0.20
-
-INITIAL_PRODUCTS = [
-    {'name': 'Anillo TODO PASA',  'description': 'Anillo premium con grabado distintivo.',   'category': 'anillos',  'category_label': 'Anillos',  'price': 45000.00, 'image': '/static/images/ring-todo-pasa.jpg',  'sizes': ['12','14','16','18']},
-    {'name': 'Anillo Oval',       'description': 'Anillo con diseño oval elegante.',          'category': 'anillos',  'category_label': 'Anillos',  'price': 45000.00, 'image': '/static/images/ring-oval.jpg',       'sizes': ['12','14','16','18']},
-    {'name': 'Anillo Corona',     'description': 'Anillo con estilo clásico y superior.',     'category': 'anillos',  'category_label': 'Anillos',  'price': 45000.00, 'image': '/static/images/ring-crown.jpg',      'sizes': ['12','14','16','18']},
-    {'name': 'Anillo Número 32',  'description': 'Anillo con diseño numerado de colección.',  'category': 'anillos',  'category_label': 'Anillos',  'price': 45000.00, 'image': '/static/images/ring-32.jpg',         'sizes': ['12','14','16','18']},
-    {'name': 'Anillo Stone',      'description': 'Anillo con piedra roja vibrante.',          'category': 'anillos',  'category_label': 'Anillos',  'price': 65.00,    'image': '/static/images/ring-redstone.jpg',   'sizes': ['12','14','16','18']},
-    {'name': 'Pulsera Dorada',    'description': 'Pulsera de estilo ancho y moderno.',        'category': 'pulseras', 'category_label': 'Pulseras', 'price': 110000.00,'image': '/static/images/pulsera-band.jpg',    'sizes': ['S','M','L']},
-    {'name': 'Pulsera Lux',       'description': 'Pulsera sólida con acabado premium.',       'category': 'pulseras', 'category_label': 'Pulseras', 'price': 110000.00,'image': '/static/images/pulsera-band2.jpg',   'sizes': ['S','M','L']},
-    {'name': 'Collar Trenza',     'description': 'Cadena trenzada con brillo dorado.',        'category': 'collares', 'category_label': 'Collares', 'price': 120.00,   'image': '/static/images/necklace-1.jpg',      'sizes': ['40cm','45cm','50cm']},
-    {'name': 'Collar Clásico',    'description': 'Cadena clásica para uso diario.',           'category': 'collares', 'category_label': 'Collares', 'price': 140.00,   'image': '/static/images/necklace-2.jpg',      'sizes': ['40cm','45cm','50cm']},
-    {'name': 'Combo Elegance',    'description': 'Set con cadena y pieza de lujo.',           'category': 'combos',   'category_label': 'Combo',    'price': 220.00,   'image': '/static/images/combo-1.jpg',         'sizes': ['Único']},
-    {'name': 'Combo Brillante',   'description': 'Set especial con diseño distintivo.',       'category': 'combos',   'category_label': 'Combo',    'price': 245.00,   'image': '/static/images/combo-2.jpg',         'sizes': ['Único']},
-]
-
-
-def seed_products():
-    if Product.query.count() == 0:
-        for p in INITIAL_PRODUCTS:
-            product = Product(
-                name=p['name'],
-                description=p['description'],
-                category=p['category'],
-                category_label=p['category_label'],
-                original_price=p['price'],
-                price=round(p['price'] * (1 - DISCOUNT), 2),
-                image=p['image'],
-                active=True
-            )
-            db.session.add(product)
-            db.session.flush()
-            for size in p['sizes']:
-                db.session.add(ProductVariant(product_id=product.id, size=size, stock=10))
-        db.session.commit()
-
-
 with app.app_context():
-    db.create_all()
-    seed_products()
+    init_database(bcrypt)
 
 
 # =========================
@@ -366,7 +228,7 @@ def register():
         if User.query.filter_by(email=email).first():
             return render_template('auth.html', error='El email ya está registrado.', mode='register')
         user = User(name=name, email=email)
-        user.set_password(password)
+        user.set_password(bcrypt, password)
         db.session.add(user)
         db.session.commit()
         login_user(user)
@@ -380,7 +242,7 @@ def login():
         email    = request.form.get('email', '').strip()
         password = request.form.get('password', '')
         user     = User.query.filter_by(email=email).first()
-        if user and user.check_password(password):
+        if user and user.check_password(bcrypt, password):
             login_user(user)
             return redirect(request.args.get('next') or url_for('home'))
         return render_template('auth.html', error='Email o contraseña incorrectos.', mode='login')
@@ -505,16 +367,29 @@ def admin_order_status(order_id):
 @app.route('/admin/login', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
-        password = request.form.get('password', '')
-        if password == ADMIN_PASSWORD:
-            user = User.query.filter_by(is_admin=True).first()
+        from database import ADMIN_EMAIL
+
+        password = request.form.get('password', '').strip()
+        user = User.query.filter_by(is_admin=True).first()
+
+        valid = False
+        if user and user.check_password(bcrypt, password):
+            valid = True
+        elif password == ADMIN_PASSWORD.strip():
+            valid = True
             if not user:
-                user = User(name='Admin', email='admin@pedrojoyas.com', is_admin=True)
-                user.set_password(password)
+                user = User(name='Administrador', email=ADMIN_EMAIL, is_admin=True)
+                user.set_password(bcrypt, password)
                 db.session.add(user)
                 db.session.commit()
+            elif not user.check_password(bcrypt, password):
+                user.set_password(bcrypt, password)
+                db.session.commit()
+
+        if valid and user:
             login_user(user)
             return redirect(url_for('admin_dashboard'))
+
         return render_template('admin/login.html', error='Contraseña incorrecta.')
     return render_template('admin/login.html')
 
