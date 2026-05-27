@@ -36,7 +36,7 @@ INITIAL_PRODUCTS = [
         'category': 'anillos',
         'category_label': 'Anillos',
         'price': 45000.00,
-        'image': '/static/images/anillo3.jpg',
+        'image': '/static/images/anillo3.jpeg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
@@ -47,7 +47,7 @@ INITIAL_PRODUCTS = [
         'category': 'anillos',
         'category_label': 'Anillos',
         'price': 45000.00,
-        'image': '/static/images/anillo4.jpg',
+        'image': '/static/images/anillo4.jpeg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
@@ -101,7 +101,7 @@ INITIAL_PRODUCTS = [
         'category': 'collares',
         'category_label': 'Collares',
         'price': 110000.00,
-        'image': '/static/images/cadenatourbillon.jpeg',
+        'image': '/static/images/cadenatoutbillon.jpg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
@@ -112,7 +112,7 @@ INITIAL_PRODUCTS = [
         'category': 'collares',
         'category_label': 'Collares',
         'price': 90000.00,
-        'image': '/static/images/cadenajuliana.jpeg',
+        'image': '/static/images/cadena juliana.jpeg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
@@ -123,7 +123,7 @@ INITIAL_PRODUCTS = [
         'category': 'collares',
         'category_label': 'Collares',
         'price': 110000.00,
-        'image': '/static/images/cadenagrumet.jpeg',
+        'image': '/static/images/grumet.jpeg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     }, 
@@ -134,7 +134,7 @@ INITIAL_PRODUCTS = [
         'category': 'collares',
         'category_label': 'Collares',
         'price': 90000.00,
-        'image': '/static/images/cadenaforcet.jpeg',
+        'image': '/static/images/Forcet.jpg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
@@ -156,15 +156,20 @@ INITIAL_PRODUCTS = [
         'category': 'combos',
         'category_label': 'Combo',
         'price': 150000.00,
-        'image': '/static/images/combo-2.jpeg',
+        'image': '/static/images/combo-2.jpg',
         'sizes': ['Único'],
         'stocks': [3],
     },
 ]
 
 
-def seed_products():
-    if Product.query.count() > 0:
+def seed_products(force=False):
+    """Carga el catálogo. Con force=True reemplaza todos los productos."""
+    if force:
+        ProductVariant.query.delete()
+        Product.query.delete()
+        db.session.commit()
+    elif Product.query.count() > 0:
         return 0
 
     created = 0
@@ -210,17 +215,34 @@ def seed_admin(bcrypt):
     return True
 
 
-def init_database(bcrypt, reset=False):
+def sync_catalog(bcrypt):
+    """Reemplaza el catálogo con INITIAL_PRODUCTS sin borrar usuarios ni pedidos."""
+    db.create_all()
+    products_added = seed_products(force=True)
+    admin_added = seed_admin(bcrypt)
+    return {
+        'products_seeded': products_added,
+        'users': User.query.count(),
+        'products': Product.query.count(),
+        'variants': ProductVariant.query.count(),
+    }
+
+
+def init_database(bcrypt, reset=False, sync_products=False):
     """Crea tablas y carga datos iniciales si están vacías."""
     if reset:
         db.drop_all()
 
     db.create_all()
-    products_added = seed_products()
+    if sync_products:
+        products_added = seed_products(force=True)
+    else:
+        products_added = seed_products()
     admin_added = seed_admin(bcrypt)
 
     return {
         'reset': reset,
+        'sync_products': sync_products,
         'products_seeded': products_added,
         'admin_seeded': admin_added,
         'users': User.query.count(),

@@ -143,6 +143,11 @@ def api_checkout():
         if not MP_ACCESS_TOKEN:
             return jsonify({'message': 'Token de Mercado Pago no configurado.'}), 500
 
+        success_url = invoice_url + '?status=approved'
+        pending_url = invoice_url + '?status=pending'
+        failure_url = invoice_url + '?status=failure'
+        is_local_url = success_url.startswith('http://127.0.0.1') or success_url.startswith('http://localhost')
+
         preference = {
             'payer': {
                 'name': buyer_name,
@@ -164,19 +169,31 @@ def api_checkout():
             } if shipping_address else {},
             'external_reference': order_id,
             'back_urls': {
-                'success': invoice_url + '?status=approved',
-                'pending': invoice_url + '?status=pending',
-                'failure': invoice_url + '?status=failure'
+                'success': success_url,
+                'pending': pending_url,
+                'failure': failure_url
             },
-            'auto_return': 'approved',
-            'notification_url': url_for('mp_webhook', _external=True),
             'statement_descriptor': 'Pedro Joyas',
             'payment_methods': {'installments': 12}
         }
 
+        # Mercado Pago rechaza auto_return=approved cuando se usan URLs locales.
+        # En producción (Render) sí conviene activarlo.
+        if not is_local_url:
+            preference['auto_return'] = 'approved'
+            preference['notification_url'] = url_for('mp_webhook', _external=True)
+
         resp = requests.post(MP_API_URL, headers={'Authorization': f'Bearer {MP_ACCESS_TOKEN}'}, json=preference, timeout=15)
         if resp.status_code not in (200, 201):
-            return jsonify({'message': 'Error al crear preferencia de Mercado Pago.'}), 502
+            try:
+                mp_error = resp.json()
+            except ValueError:
+                mp_error = {'raw': resp.text[:300]}
+            return jsonify({
+                'message': 'Error al crear preferencia de Mercado Pago.',
+                'mp_status': resp.status_code,
+                'mp_error': mp_error
+            }), 502
 
         payment_url = resp.json().get('init_point')
         _notify_owner(order, payment_url)
