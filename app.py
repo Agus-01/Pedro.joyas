@@ -421,6 +421,7 @@ def admin_login():
 # =========================
 
 def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
+    return  # Desactivar notificaciones por ahora
     items_text = '\n'.join(f"  - {i['title']} x{i['quantity']} = ${i['total']:,.0f}" for i in order.items)
     address = f"{order.shipping_address}, {order.shipping_city}, {order.shipping_province}" if order.shipping_address else 'No especificada'
 
