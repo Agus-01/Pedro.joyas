@@ -16,7 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pedro-joyas-secret-2026')
 
-# Database
+#Database
 db_url = os.environ.get('DATABASE_URL', 'sqlite:///jewelry_store.db')
 if db_url.startswith("postgresql://"):
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
