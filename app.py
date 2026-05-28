@@ -503,11 +503,11 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
             subject = f'🛒 Nueva orden #{order.id} - MP - {order.buyer_name}'
             body = f'Nueva orden con Mercado Pago\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nEmail: {order.buyer_email}\nTeléfono: {order.buyer_phone}\nEnvío: {address}\n\nProductos:\n{items_text}\n\nTOTAL: ${order.total:,.0f}\nLink MP: {payment_url}'
 
-        if OWNER_EMAIL and app.config['MAIL_USERNAME']:
-            try:
+        try:
+            if OWNER_EMAIL and app.config['MAIL_USERNAME']:
                 mail.send(Message(subject, recipients=[OWNER_EMAIL], body=body))
-            except Exception:
-                pass
+        except Exception as e:
+            print(f"Error de mail omitido: {str(e)}")
 
     # Mantener el envío de logs a WhatsApp que ya tenías
     wa_body = f'PAGO APROBADO\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nTOTAL: ${order.total:,.0f}' if paid else body
