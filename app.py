@@ -17,6 +17,7 @@ app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pedro-joyas-secret-2026')
 
 # --- CONFIGURACIÓN DE BASE DE DATOS LIMPIA ---
+db_url = os.environ.get('DATABASE_URL', 'sqlite:///jewelry_store.db')
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///jewelry_store.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
