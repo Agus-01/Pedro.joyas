@@ -16,8 +16,7 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pedro-joyas-secret-2026')
 
-# --- CONFIGURACIÓN DE BASE DE DATOS FINAL ---
-# --- CONFIGURACIÓN DE BASE DE DATOS IP DIRECTA ---
+# --- CONFIGURACIÓN DE BASE DE DATOS LIMPIA ---
 db_url = os.environ.get('DATABASE_URL', 'sqlite:///jewelry_store.db')
 
 if db_url.startswith("postgresql://"):
@@ -25,14 +24,9 @@ if db_url.startswith("postgresql://"):
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
 app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    "pool_pre_ping": True,
-    # Este argumento le dice a Supabase qué proyecto es, aunque usemos la IP
-    "connect_args": {
-        "options": "-c project=rvbrsatciwjwlddryvaf"
-    }
+    "pool_pre_ping": True
 }
-# -------------------------------------------------
-# ---------------------------------------------
+
 db.init_app(app)
 
 # Auth
