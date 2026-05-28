@@ -16,13 +16,23 @@ load_dotenv()
 app = Flask(__name__)
 app.secret_key = os.environ.get('SECRET_KEY', 'pedro-joyas-secret-2026')
 
-#Database
+# --- CONFIGURACIÓN DE BASE DE DATOS FINAL ---
 db_url = os.environ.get('DATABASE_URL', 'sqlite:///jewelry_store.db')
+
 if db_url.startswith("postgresql://"):
+    # 1. Aseguramos el dialecto psycopg2
     db_url = db_url.replace("postgresql://", "postgresql+psycopg2://", 1)
+    
+    # 2. Si es la URL del pooler, forzamos el usuario con el ID del proyecto explícito
+    if "pooler.supabase.com" in db_url and "postgres.rvbrsatciwjwlddryvaf" not in db_url:
+        db_url = db_url.replace("://postgres:", "://postgres.rvbrsatciwjwlddryvaf:", 1)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_url
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {"pool_pre_ping": True}
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    "pool_pre_ping": True,
+    "connect_args": {"options": "-c search_path=public"}
+}
+# ---------------------------------------------
 db.init_app(app)
 
 # Auth
