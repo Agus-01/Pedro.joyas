@@ -506,9 +506,8 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
         try:
             if OWNER_EMAIL and app.config['MAIL_USERNAME']:
                 mail.send(Message(subject, recipients=[OWNER_EMAIL], body=body))
-        except Exception as e:
-            print(f"Error de mail omitido: {str(e)}")
-
+        except Exception:
+            pass
     # Mantener el envío de logs a WhatsApp que ya tenías
     wa_body = f'PAGO APROBADO\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nTOTAL: ${order.total:,.0f}' if paid else body
     wa_text = wa_body.replace('\n', '%0A').replace(' ', '%20')[:1000]
