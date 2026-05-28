@@ -20,7 +20,7 @@ INITIAL_PRODUCTS = [
         'stocks': [10, 10, 10, 10],
     },
     {
-        'name': 'Anillo Colección',
+        'name': 'Anillo Cleopatra',
         'description': 'La máxima expresión del lujo contemporáneo. Una pieza exclusiva de Pedro Joyas, diseñada con líneas sofisticadas y un pulido espejo que captura la luz desde cualquier ángulo.',
         'category': 'anillos',
         'category_label': 'Anillos',
