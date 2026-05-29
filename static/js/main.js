@@ -360,7 +360,17 @@ function showTransferInfo(result) {
         document.getElementById('transfer-amount').textContent = `$${result.transfer_amount.toLocaleString('es-AR')}`;
         document.getElementById('transfer-ref').textContent    = result.order_id || '';
         document.getElementById('transfer-invoice').href       = result.invoice_url;
+
+    // 🟢 ESTA ES LA LÍNEA NUEVA: Pega el link de WhatsApp dinámico en el botón
+        const waBtn = document.getElementById('transfer-whatsapp');
+        if (waBtn && result.whatsapp_link) {
+            waBtn.href = result.whatsapp_link;
+        }
+
         modal.classList.add('active');
+
+        // Por las dudas, si cambiamos el estilo en el HTML, forzamos que se vea:
+        modal.style.display = 'flex';
     }
 }
 
