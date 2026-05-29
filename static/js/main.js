@@ -369,10 +369,32 @@ function showTransferInfo(result) {
 
         modal.classList.add('active');
 
-        // Por las dudas, si cambiamos el estilo en el HTML, forzamos que se vea:
-        modal.style.display = 'flex';
     }
 }
+
+function desactivarProcesando() {
+    // Buscá cómo se llama tu pantalla de carga, por ejemplo:
+    const loadingOverlay = document.getElementById('loading-overlay'); 
+    if (loadingOverlay) {
+        loadingOverlay.classList.remove('active'); // O style.display = 'none'
+    }
+    
+    // Reactivar el botón de compra
+    const btnComprar = document.getElementById('btn-checkout'); // Cambialo por el ID real de tu botón
+    if (btnComprar) {
+        btnComprar.disabled = false;
+        btnComprar.textContent = 'Confirmar Compra';
+    }
+}
+
+window.addEventListener('pageshow', function (event) {
+    // Si el usuario viene de la cache (es decir, tocó el botón atrás del navegador)
+    if (event.persisted || (typeof window.performance != "undefined" && window.performance.navigation.type === 2)) {
+        // Recargamos la página para que limpie el carrito y los estados trabados
+        window.location.reload();
+    }
+});
+
 
 // --- Menu ---
 const menuBtn = document.getElementById('menu-btn');
