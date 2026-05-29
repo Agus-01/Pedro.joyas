@@ -141,6 +141,7 @@ def api_checkout():
 
     invoice_url = url_for('invoice', order_id=order_id, _external=True)
 
+    # === CASO 1: SI ELIGE MERCADO PAGO ===
     if payment_method == 'mercadopago':
         if not MP_ACCESS_TOKEN:
             return jsonify({'message': 'Token de Mercado Pago no configurado.'}), 500
@@ -179,31 +180,34 @@ def api_checkout():
             'payment_methods': {'installments': 12}
         }
 
-        # Mercado Pago rechaza auto_return=approved cuando se usan URLs locales.
-        # En producción (Render) sí conviene activarlo.
         if not is_local_url:
             preference['auto_return'] = 'approved'
             preference['notification_url'] = url_for('mp_webhook', _external=True)
 
         resp = requests.post(MP_API_URL, headers={'Authorization': f'Bearer {MP_ACCESS_TOKEN}'}, json=preference, timeout=15)
         if resp.status_code not in (200, 201):
-            try:
-                mp_error = resp.json()
-            except ValueError:
-                mp_error = {'raw': resp.text[:300]}
-            return jsonify({
-                'message': 'Error al crear preferencia de Mercado Pago.',
-                'mp_status': resp.status_code,
-                'mp_error': mp_error
-            }), 502
+            return jsonify({'message': 'Error al crear preferencia de Mercado Pago.'}), 502
 
         payment_url = resp.json().get('init_point')
-        _notify_owner(order, payment_url)
+        
+        # ❌ SACAMOS EL _notify_owner DE ACÁ PARA QUE NO MANDE MAIL NI SE CUELGUE RENDER
         return jsonify({'payment_url': payment_url, 'invoice_url': invoice_url, 'order_id': order_id})
 
-    _notify_owner(order, None, alias_info={'alias': ALIAS_CBU, 'amount': total, 'reference': order_id})
-    return jsonify({'payment_url': None, 'invoice_url': invoice_url, 'order_id': order_id, 'alias': ALIAS_CBU, 'transfer_amount': total})
+    # === CASO 2: SI ELIGE TRANSFERENCIA BANCARIA ===
+    # Armamos el texto automático para tu WhatsApp sin tocar la RAM
+    items_text = '%0A'.join(f"- {i['title']} x{i['quantity']}" for i in prepared_items)
+    mensaje_wa = f"Hola Pedro Joyas! Armé mi pedido #{order_id} por Transferencia.%0A%0A*Detalle:*%0A{items_text}%0A%0A*Total:* ${total:,.0f}%0A%0AAquí te adjunto el comprobante de pago."
+    whatsapp_link = f"https://wa.me/{WHATSAPP_NUMBER}?text={mensaje_wa}"
 
+    # ❌ CAMBIAMOS EL _notify_owner VIEJO POR LA RESPUESTA CON EL LINK DE WHATSAPP
+    return jsonify({
+        'payment_url': None, 
+        'invoice_url': invoice_url, 
+        'order_id': order_id, 
+        'alias': ALIAS_CBU, 
+        'transfer_amount': total,
+        'whatsapp_link': whatsapp_link
+    })
 
 @app.route('/api/mp-webhook', methods=['POST'])
 def mp_webhook():
