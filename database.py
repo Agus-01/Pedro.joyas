@@ -19,16 +19,9 @@ INITIAL_PRODUCTS = [
         'sizes': ['12', '14', '16', '18'],
         'stocks': [10, 10, 10, 10],
     },
-    {
-        'name': 'Anillo Cleopatra',
-        'description': 'La máxima expresión del lujo contemporáneo. Una pieza exclusiva de Pedro Joyas, diseñada con líneas sofisticadas y un pulido espejo que captura la luz desde cualquier ángulo.',
-        'category': 'anillos',
-        'category_label': 'Anillos',
-        'price': 56250.00,
-        'image': '/static/images/anillos.jpeg',
-        'sizes': ['12', '14', '16', '18'],
-        'stocks': [8, 8, 8, 8],
-    },
+    
+    
+    
     {
         'name': 'Anillo ROLEX grabado',
         'description': 'Inspirado en la estética de la alta relojería. Combina un imponente relieve texturizado con un grabado interno impecable, ideal para quienes buscan una presencia fuerte y sofisticada.',
@@ -51,7 +44,7 @@ INITIAL_PRODUCTS = [
     },
 
     {
-        'name': 'Anillo 73',
+        'name': 'Anillo 79',
         'description': 'Un anillopractico y elegante, con un diseño de líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
         'category': 'anillos',
         'category_label': 'Anillos',
@@ -107,11 +100,11 @@ INITIAL_PRODUCTS = [
 
     {
         'name': 'Anillo Piedra roja',
-        'description': 'Un anillo con un diseño poco común, en el que un 32 está grabado en el centro. Cuenta con líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
+        'description': 'Un anillo con una piedra roja en el centro, rodeada de un diseño elegante y sofisticado. La piedra roja aporta un toque de color vibrante, mientras que el diseño pulido y detallado lo convierte en una pieza de lujo imprescindible.',
         'category': 'anillos',
         'category_label': 'Anillos',
         'price': 56250.00,
-        'image': '/static/images/piedras.jpeg',
+        'image': '/static/images/piedras.jpg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
