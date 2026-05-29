@@ -340,12 +340,36 @@ checkoutForm.addEventListener('submit', async event => {
         updateCart();
         checkoutModal.classList.remove('active');
 
-        if (result.payment_url) {
-            showNotification('Redirigiendo a Mercado Pago...');
-            setTimeout(() => { window.location.href = result.payment_url; }, 800);
+       if (result.payment_url) {
+            // 🛑 FRENO DE MANO: Buscamos el nuevo modal de instrucciones
+            const mpModal = document.getElementById('mp-instructions-modal');
+            const mpBtn = document.getElementById('btn-confirm-mp');
+            
+            if (mpModal && mpBtn) {
+                // Como abrimos el modal de instrucciones, sacamos el "Procesando..." del formulario
+                const confirmBtn = document.getElementById('confirm-btn');
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.textContent = 'Confirmar compra';
+                }
+
+                // Mostramos el cartel explicativo
+                mpModal.classList.add('active');
+                
+                // Cuando el cliente da clic en "Entendido, ir a pagar", recién ahí lo mandamos
+                mpBtn.onclick = function() {
+                    showNotification('Redirigiendo a Mercado Pago...');
+                    setTimeout(() => { window.location.href = result.payment_url; }, 500);
+                };
+            } else {
+                // Por las dudas, si el HTML no llegó a cargar el modal, va directo como antes para no trabarse
+                showNotification('Redirigiendo a Mercado Pago...');
+                setTimeout(() => { window.location.href = result.payment_url; }, 800);
+            }
         } else {
             showTransferInfo(result);
         }
+
     } catch {
         showNotification('Error de conexión. Intentá nuevamente.');
         confirmBtn.disabled = false;
@@ -373,17 +397,11 @@ function showTransferInfo(result) {
 }
 
 function desactivarProcesando() {
-    // Buscá cómo se llama tu pantalla de carga, por ejemplo:
-    const loadingOverlay = document.getElementById('loading-overlay'); 
-    if (loadingOverlay) {
-        loadingOverlay.classList.remove('active'); // O style.display = 'none'
-    }
-    
-    // Reactivar el botón de compra
-    const btnComprar = document.getElementById('btn-checkout'); // Cambialo por el ID real de tu botón
+    // Reactivar el botón de compra con su ID real (confirm-btn)
+    const btnComprar = document.getElementById('confirm-btn');
     if (btnComprar) {
         btnComprar.disabled = false;
-        btnComprar.textContent = 'Confirmar Compra';
+        btnComprar.textContent = 'Confirmar compra';
     }
 }
 
