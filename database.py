@@ -66,8 +66,19 @@ INITIAL_PRODUCTS = [
         'description': 'Un anillo que combina la elegancia de la alta joyería con la innovación del diseño articulado. Su estructura flexible se adapta cómodamente al dedo, mientras que su acabado pulido y detalles grabados lo convierten en una pieza de lujo imprescindible.',
         'category': 'anillos',
         'category_label': 'Anillos',
-        'price': 56250.00,
+        'price': 81250.00,
         'image': '/static/images/rolexa.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo Rolex grueso',
+        'description': 'La máxima expresión del lujo contemporáneo. Una pieza exclusiva de Pedro Joyas, diseñada con líneas sofisticadas y un pulido espejo que captura la luz desde cualquier ángulo.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/anillos.jpeg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
@@ -79,6 +90,40 @@ INITIAL_PRODUCTS = [
         'category_label': 'Anillos',
         'price': 100,
         'image': '/static/images/rolexa.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo 32',
+        'description': 'Un anillo con un diseño poco común, en el que un 32 está grabado en el centro. Cuenta con líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/32.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo Piedra roja',
+        'description': 'Un anillo con un diseño poco común, en el que un 32 está grabado en el centro. Cuenta con líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/piedras.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    
+    {
+        'name': 'Anillo Cleopatra',
+        'description': 'Este anillo Cleopatra demuestra la máxima expresión del lujo contemporáneo. Es una pieza exclusiva de Pedro Joyas, diseñada con líneas sofisticadas y un pulido espejo que captura la luz desde cualquier ángulo.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/cleopatra.jpg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
@@ -130,11 +175,11 @@ INITIAL_PRODUCTS = [
 
     # --- CADENAS / COLLARES (Precio de referencia superior como único precio) ---
     {
-        'name': 'Cadena TORBILLON',
+        'name': 'Cadena Tourbillon',
         'description': 'Un clásico que jamás pasa de moda. Esta cadena presenta un eslabonado trenzado de gran grosor que se asienta de forma impecable en el cuello, derrochando prestancia y categoría.',
         'category': 'collares',
         'category_label': 'Collares',
-        'price': 137500.00,
+        'price': 118750.00,
         'image': '/static/images/cadenatoutbillon.jpg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
@@ -144,13 +189,13 @@ INITIAL_PRODUCTS = [
         'description': 'Sutil, brillante y cautivadora. Sus eslabones pulidos simétricamente garantizan un reflejo dorado constante, siendo la opción ideal tanto para lucir sola como para acompañar con tus dijes favoritos.',
         'category': 'collares',
         'category_label': 'Collares',
-        'price': 112500.00,
+        'price':118750.00,
         'image': '/static/images/cadena juliana.jpeg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
     {
-        'name': 'Cadena GRUMET',
+        'name': 'Cadena GROUMET',
         'description': 'Fuerza y carácter tradicional. Confeccionada con eslabones planos entrelazados con precisión milimétrica, es la cadena ideal para quienes buscan una joya imponente, duradera y de gran presencia.',
         'category': 'collares',
         'category_label': 'Collares',
@@ -164,11 +209,23 @@ INITIAL_PRODUCTS = [
         'description': 'Elegancia geométrica en estado puro. Su diseño de eslabones rectangulares pulidos a mano aporta una estética limpia, minimalista y de altísima costura que realza cualquier outfit.',
         'category': 'collares',
         'category_label': 'Collares',
-        'price': 112500.00,
+        'price': 118750.00,
         'image': '/static/images/Forcet.jpg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
+
+{
+        'name': 'Cadena Paris',
+        'description': 'Un diseño que evoca la sofisticación parisina con un toque moderno. Sus eslabones redondeados y pulidos a mano crean un brillo suave y elegante, convirtiéndola en la opción perfecta para quienes buscan una pieza versátil y con estilo atemporal.',
+        'category': 'collares',
+        'category_label': 'Collares',
+        'price': 118750.00,
+        'image': '/static/images/paris.jpeg',
+        'sizes': ['40cm', '45cm', '50cm'],
+        'stocks': [4, 4, 4],
+    },
+
 
     # --- COMBOS ---
     {
@@ -182,7 +239,7 @@ INITIAL_PRODUCTS = [
         'stocks': [3],
     },
     {
-        'name': 'Combo Triple GRUMET',
+        'name': 'Combo Triple GROUMET',
         'description': 'El set definitivo para los amantes de las joyas con personalidad. Un imponente conjunto que lleva el clásico estilo Grumet a su máximo nivel de ostentación, combinando tres piezas de brillo salvaje.',
         'category': 'combos',
         'category_label': 'Combo',
