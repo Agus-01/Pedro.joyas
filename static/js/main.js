@@ -380,7 +380,7 @@ checkoutForm.addEventListener('submit', async event => {
 function showTransferInfo(result) {
     const modal = document.getElementById('transfer-modal');
     if (modal) {
-        document.getElementById('transfer-alias').textContent  = result.alias || '';
+        document.getElementById('transfer-alias').textContent  = 'pedro.joyas48';
         document.getElementById('transfer-amount').textContent = `$${result.transfer_amount.toLocaleString('es-AR')}`;
         document.getElementById('transfer-ref').textContent    = result.order_id || '';
         document.getElementById('transfer-invoice').href       = result.invoice_url;

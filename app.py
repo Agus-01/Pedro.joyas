@@ -39,7 +39,7 @@ mail = Mail(app)
 
 MP_ACCESS_TOKEN = os.environ.get('MP_ACCESS_TOKEN', '').strip()
 MP_API_URL      = 'https://api.mercadopago.com/checkout/preferences'
-ALIAS_CBU       = os.environ.get('ALIAS_CBU', 'pedro.joyas')
+ALIAS_CBU       = os.environ.get('ALIAS_CBU', 'pedro.joyas48')
 WHATSAPP_NUMBER = os.environ.get('WHATSAPP_NUMBER', '5491162125672')
 OWNER_EMAIL     = os.environ.get('OWNER_EMAIL', 'Pedro.joyaas@gmail.com')
 ADMIN_PASSWORD  = os.environ.get('ADMIN_PASSWORD', 'admin1234')
