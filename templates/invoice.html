@@ -29,7 +29,20 @@
         .info-box h3 { margin: 0 0 0.8rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.1em; color: #b8860b; }
         .info-box p { margin: 0.3rem 0; font-size: 0.95rem; color: #333; }
 
-        table { width: 100%; border-collapse: collapse; margin-bottom: 1.5rem; }
+        /* ✨ MEJORA: Contenedor responsivo para celulares */
+        .table-container { 
+            width: 100%; 
+            overflow-x: auto; 
+            -webkit-overflow-scrolling: touch; 
+            margin-bottom: 1.5rem; 
+            border-radius: 12px; 
+            border: 1px solid #f0e8d0;
+        }
+        table { 
+            width: 100%; 
+            min-width: 540px; /* Asegura que el contenido no se aplaste */
+            border-collapse: collapse; 
+        }
         thead tr { background: #faf8f3; }
         th { padding: 0.9rem 1rem; text-align: left; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.08em; color: #888; border-bottom: 2px solid #f0e8d0; }
         td { padding: 1rem; border-bottom: 1px solid #f0e8d0; font-size: 0.95rem; }
@@ -49,11 +62,13 @@
             .buyer-section { grid-template-columns: 1fr; }
             .invoice-header { flex-direction: column; }
             .invoice-meta { text-align: left; }
+            body { padding: 1rem; }
+            .invoice { padding: 1.5rem; }
         }
         @media print {
             body { background: #fff; padding: 0; }
             .actions { display: none; }
-            .invoice { box-shadow: none; border-radius: 0; }
+            .invoice { box-shadow: none; border-radius: 0; padding: 0; }
         }
     </style>
 </head>
@@ -70,7 +85,8 @@
             <div class="invoice-meta">
                 <h2>Comprobante de compra</h2>
                 <p>Orden: <strong>#{{ order.id }}</strong></p>
-                <p>Fecha: <strong>{{ order.created_at.strftime('%d/%m/%Y %H:%M') }}</strong></p>
+                <!-- 🕒 Cambiado para tomar la fecha argentina calculada con pytz -->
+                <p>Fecha: <strong>{{ order.fecha }}</strong></p>
                 <p>Método: <strong>{{ order.payment_method | capitalize }}</strong></p>
                 <span class="status-badge" id="status-badge">Verificando...</span>
             </div>
@@ -91,26 +107,29 @@
             </div>
         </div>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Producto</th>
-                    <th>Cantidad</th>
-                    <th>Precio unitario</th>
-                    <th>Subtotal</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in order.items %}
-                <tr>
-                    <td>{{ item.title }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ '%.2f' | format(item.unit_price) }}</td>
-                    <td>${{ '%.2f' | format(item.total) }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+        <!-- 📱 ✨ Contenedor responsivo añadido -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad</th>
+                        <th>Precio unitario</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order.items %}
+                    <tr>
+                        <td>{{ item.title }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ '%.2f' | format(item.unit_price) }}</td>
+                        <td>${{ '%.2f' | format(item.total) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
 
         <div class="total-row">
             <span>Importe total</span>

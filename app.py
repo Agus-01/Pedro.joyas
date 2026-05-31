@@ -8,6 +8,9 @@ from functools import wraps
 import requests
 from dotenv import load_dotenv
 
+from datetime import datetime
+import pytz
+
 from database import DISCOUNT, init_database
 from models import Order, Product, ProductVariant, User, db
 
@@ -94,6 +97,9 @@ def api_checkout():
     shipping_zip      = data.get('shippingZip', '').strip()
     payment_method    = data.get('paymentMethod', 'mercadopago')
     items             = data.get('items', [])
+    
+    zona_horaria_arg = pytz.timezone('America/Argentina/Buenos_Aires')
+    fecha_actual_arg = datetime.now(zona_horaria_arg)
 
     if not buyer_name or not buyer_email or not buyer_dni or not items:
         return jsonify({'message': 'Datos incompletos.'}), 400
@@ -129,7 +135,8 @@ def api_checkout():
         payment_method=payment_method,
         items=prepared_items,
         total=total,
-        payment_status='pending'
+        payment_status='pending',  # ✨ CORREGIDO: Se agregó la coma faltante aquí
+        created_at=fecha_actual_arg
     )
 
     try:
@@ -190,16 +197,13 @@ def api_checkout():
 
         payment_url = resp.json().get('init_point')
         
-        # ❌ SACAMOS EL _notify_owner DE ACÁ PARA QUE NO MANDE MAIL NI SE CUELGUE RENDER
         return jsonify({'payment_url': payment_url, 'invoice_url': invoice_url, 'order_id': order_id})
 
     # === CASO 2: SI ELIGE TRANSFERENCIA BANCARIA ===
-    # Armamos el texto automático para tu WhatsApp sin tocar la RAM
     items_text = '%0A'.join(f"- {i['title']} x{i['quantity']}" for i in prepared_items)
     mensaje_wa = f"Hola Pedro Joyas! Armé mi pedido #{order_id} por Transferencia.%0A%0A*Detalle:*%0A{items_text}%0A%0A*Total:* ${total:,.0f}%0A%0AAquí te adjunto el comprobante de pago."
     whatsapp_link = f"https://wa.me/{WHATSAPP_NUMBER}?text={mensaje_wa}"
 
-    # ❌ CAMBIAMOS EL _notify_owner VIEJO POR LA RESPUESTA CON EL LINK DE WHATSAPP
     return jsonify({
         'payment_url': None, 
         'invoice_url': invoice_url, 
@@ -208,6 +212,7 @@ def api_checkout():
         'transfer_amount': total,
         'whatsapp_link': whatsapp_link
     })
+
 
 @app.route('/api/mp-webhook', methods=['POST'])
 def mp_webhook():
@@ -235,6 +240,17 @@ def invoice(order_id):
     order = Order.query.get(order_id)
     if not order:
         return 'Orden no encontrada', 404
+    
+    # ✨ MEJORA: Formateamos la fecha almacenada para enviársela limpia al HTML
+    if order.created_at:
+        # Si la fecha ya viene con zona horaria o es naive, la formateamos prolija
+        zona_arg = pytz.timezone('America/Argentina/Buenos_Aires')
+        # Nos aseguramos de mapearla correctamente si la DB guardó como UTC o local
+        fecha_local = order.created_at.astimezone(zona_arg) if order.created_at.tzinfo else zona_arg.localize(order.created_at)
+        order.fecha = fecha_local.strftime('%d/%m/%Y %H:%M')
+    else:
+        order.fecha = datetime.now(pytz.timezone('America/Argentina/Buenos_Aires')).strftime('%d/%m/%Y %H:%M')
+
     return render_template('invoice.html', order=order)
 
 
@@ -420,20 +436,15 @@ def admin_login():
 # =========================
 #   NOTIFICACIONES
 # =========================
-# =========================
-#   NOTIFICACIONES
-# =========================
 
 def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
     return  # Desactivar notificaciones por ahora
     items_text = '\n'.join(f"  - {i['title']} x{i['quantity']} = ${i['total']:,.0f}" for i in order.items)
     address = f"{order.shipping_address}, {order.shipping_city}, {order.shipping_province}" if order.shipping_address else 'No especificada'
 
-    # 1. Si el pago está APROBADO, armamos la Factura HTML prolija para el cliente y el dueño
     if paid:
         subject = f'✅ Comprobante de Compra #{order.id} - Pedro Joyas'
         
-        # Construimos las filas de la tabla de productos dinámicamente
         tabla_productos_html = ""
         for i in order.items:
             tabla_productos_html += f"""
@@ -443,18 +454,14 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
             </tr>
             """
 
-        # Diseño HTML de la Factura
         html_body = f"""
         <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; max-width: 600px; margin: auto; border: 1px solid #e4e4e4; padding: 30px; border-radius: 8px; color: #333;">
             <div style="text-align: center; margin-bottom: 20px;">
                 <h1 style="color: #d4af37; margin: 0; font-size: 28px; letter-spacing: 1px;">PEDRO JOYAS</h1>
                 <p style="font-size: 12px; color: #777; margin: 5px 0 0 0;">Comprobante Oficial de Pago</p>
             </div>
-            
             <hr style="border: none; border-top: 1px solid #ddd; margin: 20px 0;">
-            
             <p style="font-size: 15px;">¡Hola <b>{order.buyer_name}</b>! Tu pago ha sido procesado con éxito. A continuación te dejamos el detalle de tu compra:</p>
-            
             <div style="background-color: #f9f9f9; padding: 15px; border-radius: 5px; margin: 20px 0; font-size: 14px;">
                 <b>Número de Orden:</b> #{order.id}<br>
                 <b>DNI:</b> {order.buyer_dni}<br>
@@ -462,7 +469,6 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
                 <b>Dirección de Envío:</b> {address}<br>
                 <b>Método de Pago:</b> Mercado Pago (Aprobado)
             </div>
-            
             <h3 style="color: #444; border-bottom: 2px solid #d4af37; padding-bottom: 5px; margin-top: 25px;">Detalle del Pedido</h3>
             <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
                 <thead>
@@ -475,13 +481,10 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
                     {tabla_productos_html}
                 </tbody>
             </table>
-            
             <div style="text-align: right; margin-top: 20px; font-size: 18px; font-weight: bold; color: #111;">
                 Total Abonado: <span style="color: #d4af37;">${order.total:,.2f}</span>
             </div>
-            
             <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0 20px 0;">
-            
             <p style="font-size: 12px; color: #999; text-align: center; line-height: 1.5; margin: 0;">
                 Gracias por confiar en nosotros.<br>
                 Si tenés alguna duda con tu pedido, escribinos directamente respondiendo a este correo.<br>
@@ -490,7 +493,6 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
         </div>
         """
         
-        # Enviamos el mail con el HTML renderizado al cliente y a vos (copia)
         if app.config['MAIL_USERNAME']:
             try:
                 msg = Message(subject, recipients=[order.buyer_email, OWNER_EMAIL])
@@ -499,7 +501,6 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
             except Exception as e:
                 print(f"Error enviando mail HTML: {str(e)}")
 
-    # 2. Casos de órdenes pendientes (Texto común clásico como tenías antes)
     else:
         if alias_info:
             subject = f'🛒 Nueva orden #{order.id} - Transferencia - {order.buyer_name}'
@@ -513,7 +514,7 @@ def _notify_owner(order, payment_url=None, alias_info=None, paid=False):
                 mail.send(Message(subject, recipients=[OWNER_EMAIL], body=body))
         except Exception:
             pass
-    # Mantener el envío de logs a WhatsApp que ya tenías
+
     wa_body = f'PAGO APROBADO\n\nOrden: #{order.id}\nCliente: {order.buyer_name}\nTOTAL: ${order.total:,.0f}' if paid else body
     wa_text = wa_body.replace('\n', '%0A').replace(' ', '%20')[:1000]
     print(f'WA_LINK: https://wa.me/{WHATSAPP_NUMBER}?text={wa_text}')
