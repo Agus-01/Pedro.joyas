@@ -77,17 +77,6 @@ INITIAL_PRODUCTS = [
     },
 
     {
-        'name': 'Prueba',
-        'description': 'Un anillo que combina la elegancia de la alta joyería con la innovación del diseño articulado. Su estructura flexible se adapta cómodamente al dedo, mientras que su acabado pulido y detalles grabados lo convierten en una pieza de lujo imprescindible.',
-        'category': 'anillos',
-        'category_label': 'Anillos',
-        'price': 100,
-        'image': '/static/images/rolexa.jpeg',
-        'sizes': ['12', '14', '16', '18'],
-        'stocks': [8, 8, 8, 8],
-    },
-
-    {
         'name': 'Anillo 32',
         'description': 'Un anillo con un diseño poco común, en el que un 32 está grabado en el centro. Cuenta con líneas limpias y un acabado pulido que refleja la luz de manera sutil.',
         'category': 'anillos',
