@@ -92,7 +92,7 @@ INITIAL_PRODUCTS = [
         'description': 'Un anillo con una piedra roja en el centro, rodeada de un diseño elegante y sofisticado. La piedra roja aporta un toque de color vibrante, mientras que el diseño pulido y detallado lo convierte en una pieza de lujo imprescindible.',
         'category': 'anillos',
         'category_label': 'Anillos',
-        'price': 56250.00,
+        'price': 68750.00,
         'image': '/static/images/piedras.jpg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
@@ -106,6 +106,28 @@ INITIAL_PRODUCTS = [
         'category_label': 'Anillos',
         'price': 56250.00,
         'image': '/static/images/cleopatra.jpg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo Rolex Articulado VERSACE',
+        'description': 'Este anillo a diferencia del clasico Rolex Articulado, presenta un diseño innovador y un acabado exclusivo que lo convierte en una pieza de lujo indispensable.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 81250.00,
+        'image': '/static/images/anilloarticuladov.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo TODO ES POSIBLE',
+        'description': 'Un anillo que simboliza la creencia en la posibilidad de lograr cualquier cosa. Su diseño elegante y moderno, combinado con un mensaje inspirador grabado en su interior, lo convierte en una pieza de lujo imprescindible para quienes buscan motivación y estilo en una sola joya.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 56250.00,
+        'image': '/static/images/anillotodoposible.jpeg',
         'sizes': ['12', '14', '16', '18'],
         'stocks': [8, 8, 8, 8],
     },
@@ -161,7 +183,7 @@ INITIAL_PRODUCTS = [
         'description': 'Un clásico que jamás pasa de moda. Esta cadena presenta un eslabonado trenzado de gran grosor que se asienta de forma impecable en el cuello, derrochando prestancia y categoría.',
         'category': 'collares',
         'category_label': 'Collares',
-        'price': 118750.00,
+        'price': 137500.00,
         'image': '/static/images/cadenatoutbillon.jpg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
@@ -192,12 +214,12 @@ INITIAL_PRODUCTS = [
         'category': 'collares',
         'category_label': 'Collares',
         'price': 118750.00,
-        'image': '/static/images/Forcet.jpg',
+        'image': '/static/images/forcet.jpeg',
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
 
-{
+    {
         'name': 'Cadena Paris',
         'description': 'Un diseño que evoca la sofisticación parisina con un toque moderno. Sus eslabones redondeados y pulidos a mano crean un brillo suave y elegante, convirtiéndola en la opción perfecta para quienes buscan una pieza versátil y con estilo atemporal.',
         'category': 'collares',
@@ -207,6 +229,18 @@ INITIAL_PRODUCTS = [
         'sizes': ['40cm', '45cm', '50cm'],
         'stocks': [4, 4, 4],
     },
+
+    {
+        'name': 'Cadena PUNTO PERUANO',
+        'description': 'Una reinterpretación contemporánea de la tradición peruana. Su diseño de eslabones entrelazados con un patrón único refleja la riqueza cultural y la artesanía excepcional, convirtiéndola en una pieza que irradia autenticidad y estilo.',
+        'category': 'collares',
+        'category_label': 'Collares',
+        'price': 137500.00,
+        'image': '/static/images/cadenapuntoperuano.jpeg',
+        'sizes': ['40cm', '45cm', '50cm'],
+        'stocks': [4, 4, 4],
+    },
+
 
 
     # --- COMBOS ---
@@ -252,6 +286,30 @@ INITIAL_PRODUCTS = [
         'sizes': ['Único'],
         'stocks': [3],
     },
+
+    {
+        'name': 'Combo PUNTO PERUANO',
+        'description': 'Un set que fusiona con el lujo contemporáneo. Cada pieza del combo ha sido cuidadosamente seleccionada para resaltar la artesanía única y el estilo inconfundible de esta joya, creando un conjunto que irradia autenticidad y sofisticación.',
+        'category': 'combos',
+        'category_label': 'Combo',
+        'price': 187500.00,
+        'image': '/static/images/combopuntoperuano.jpeg',
+        'sizes': ['Único'],
+        'stocks': [3],
+    },
+
+    {
+        'name': 'Combo juliana + todo pasa',
+        'description': 'este junta a la cadena juliana con el anillo todo pasa, dos piezas que se complementan a la perfección para crear un look elegante y sofisticado, ideal para quienes buscan destacar con un estilo atemporal y lleno de clase.',
+        'category': 'combos',
+        'category_label': 'Combo',
+        'price': 168750.00,
+        'image': '/static/images/cmbojulianatodopasa.jpeg',
+        'sizes': ['Único'],
+        'stocks': [3],
+    },
+    
+
 ]
 
 
