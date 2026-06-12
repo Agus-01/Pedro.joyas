@@ -7,7 +7,7 @@ DISCOUNT = 0.20
 ADMIN_EMAIL = 'agustincarbone22@gmail.com'
 ADMIN_NAME = 'Administrador'
 
-# Productos iniciales (imágenes que ya tenés en static/images)
+
 INITIAL_PRODUCTS = [
    {
         'name': 'Anillo TODO PASA',
@@ -132,7 +132,38 @@ INITIAL_PRODUCTS = [
         'stocks': [8, 8, 8, 8],
     },
 
+    {
+        'name': 'Anillo Piedra ruby macizo',
+        'description': 'Un anillo con una piedra ruby maciza en el centro, rodeada de un diseño elegante y sofisticado. La piedra ruby aporta un toque de color vibrante, mientras que el diseño pulido y detallado lo convierte en una pieza de lujo imprescindible.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 81250.00,
+        'image': '/static/images/rubymacizo.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
 
+    {
+        'name': 'Anillo Piedra Negra',
+        'description': 'Un anillo con una piedra negra en el centro, rodeada de un diseño elegante y sofisticado. La piedra negra aporta un toque de color dramático, mientras que el diseño pulido y detallado lo convierte en una pieza de lujo imprescindible.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 68750.00,
+        'image': '/static/images/piedranegra.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
+
+    {
+        'name': 'Anillo Cello circular',
+        'description': 'Un anillo con un diseño circular y elegante, inspirado en la forma de la cello. Su diseño único y sofisticado lo convierte en una pieza de lujo imprescindible.',
+        'category': 'anillos',
+        'category_label': 'Anillos',
+        'price': 50000.00,
+        'image': '/static/images/cellocircular.jpeg',
+        'sizes': ['12', '14', '16', '18'],
+        'stocks': [8, 8, 8, 8],
+    },
 
 
     # --- PULSERAS (Precio final limpio basado en el valor superior) ---
